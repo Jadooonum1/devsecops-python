@@ -1,0 +1,15 @@
+# Values Argo CD applies to the `shelflend` namespace.
+# The CI "promote" job rewrites the two tags below after a green build;
+# that commit is what Argo CD syncs. Do not edit the tag lines by hand.
+backend:
+  image:
+    tag: "0000000000000000000000000000000000000000"
+frontend:
+  image:
+    tag: "0000000000000000000000000000000000000000"
+postgres:
+  existingSecret: shelflend-db   # created once at bootstrap; Argo CD can't use Helm lookup()
+ingress:
+  host: shelflend.local
+monitoring:
+  enabled: true

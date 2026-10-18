@@ -1,0 +1,46 @@
+# prometheus-community/kube-prometheus-stack values for the local kind cluster.
+prometheus:
+  prometheusSpec:
+    # Without these two, Prometheus only selects monitors/rules from its own
+    # Helm release and silently ignores the ShelfLend ServiceMonitor.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    retention: 3d
+    scrapeInterval: 15s
+    resources:
+      requests: { cpu: 100m, memory: 400Mi }
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts: [prometheus.shelflend.local]
+    paths: [/]
+
+grafana:
+  admin:
+    existingSecret: grafana-admin   # created at install time, never committed
+    userKey: admin-user
+    passwordKey: admin-password
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts: [grafana.shelflend.local]
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
+  defaultDashboardsTimezone: browser
+
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests: { cpu: 10m, memory: 32Mi }
+
+# kind runs these control-plane parts without reachable metrics endpoints;
+# leaving them on gives permanently DOWN targets and false alerts.
+kubeControllerManager: { enabled: false }
+kubeScheduler: { enabled: false }
+kubeProxy: { enabled: false }
+kubeEtcd: { enabled: false }

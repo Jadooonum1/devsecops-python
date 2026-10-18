@@ -1,0 +1,17 @@
+# argo/argo-cd chart values for the local kind cluster.
+configs:
+  params:
+    server.insecure: true        # TLS ends at the ingress-nginx controller
+  cm:
+    timeout.reconciliation: 60s  # poll Git every minute
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hostname: argocd.shelflend.local
+dex:
+  enabled: false
+notifications:
+  enabled: false
+applicationSet:
+  replicas: 1
