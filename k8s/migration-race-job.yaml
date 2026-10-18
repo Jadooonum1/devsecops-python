@@ -1,0 +1,39 @@
+# Migration race demo: 3 pods run `alembic upgrade head` at the same moment
+# against an empty database. The advisory lock in alembic/env.py means exactly
+# one applies 0001/0002; the others wait, then find the schema at head.
+#
+#   kubectl -n shelflend exec shelflend-postgres-0 -- sh -c 'dropdb -U shelflend --if-exists race && createdb -U shelflend race'
+#   sed "s/IMAGE_TAG/<sha>/" k8s/migration-race-job.yaml | kubectl apply -f -
+#   kubectl -n shelflend logs -l job-name=migration-race --prefix
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migration-race
+  namespace: shelflend
+spec:
+  parallelism: 3
+  completions: 3
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: migrate
+          image: ghcr.io/jadooonum1/shelflend-backend:IMAGE_TAG
+          command: ["sh", "-c", "echo \"pod $(hostname) starting\"; alembic upgrade head; echo \"pod $(hostname) done\""]
+          envFrom:
+            - configMapRef: { name: shelflend-config }
+          env:
+            - { name: DB_NAME, value: race }
+            - name: DB_PASSWORD
+              valueFrom: { secretKeyRef: { name: shelflend-db, key: password } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
