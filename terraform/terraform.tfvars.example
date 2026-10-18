@@ -1,0 +1,14 @@
+# Copy to terraform.tfvars (git-ignored) and adjust. Never put credentials here:
+# use `aws configure --profile <name>` and AWS_PROFILE=<name>.
+region              = "ap-south-1"
+project             = "shelflend"
+owner               = "parth-agarwal"
+vpc_cidr            = "10.40.0.0/16"
+az_count            = 2
+enable_nat_gateway  = true
+cluster_version     = "1.34"
+api_allowed_cidrs   = ["203.0.113.10/32"] # your public IP
+node_instance_types = ["t3.medium"]
+node_desired        = 2
+node_min            = 1
+node_max            = 3
