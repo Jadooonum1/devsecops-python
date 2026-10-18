@@ -1,0 +1,30 @@
+load: 16 workers x 240s against http://127.0.0.1 (Host: shelflend.local)
+   0s  cpu=8%  desired=2  current=2
+  16s  cpu=4%  desired=2  current=2
+  31s  cpu=182%  desired=6  current=2
+  46s  cpu=396%  desired=6  current=6
+  61s  cpu=387%  desired=6  current=6
+  76s  cpu=314%  desired=6  current=6
+  91s  cpu=302%  desired=6  current=6
+ 106s  cpu=319%  desired=6  current=6
+ 121s  cpu=314%  desired=6  current=6
+ 136s  cpu=305%  desired=6  current=6
+ 152s  cpu=305%  desired=6  current=6
+ 167s  cpu=311%  desired=6  current=6
+ 182s  cpu=315%  desired=6  current=6
+ 197s  cpu=312%  desired=6  current=6
+ 212s  cpu=316%  desired=6  current=6
+ 227s  cpu=308%  desired=6  current=6
+ 244s  cpu=305%  desired=6  current=6
+ 260s  cpu=248%  desired=6  current=6
+ 275s  cpu=57%  desired=6  current=6
+ 290s  cpu=4%  desired=6  current=6
+ 305s  cpu=6%  desired=6  current=6
+ 320s  cpu=6%  desired=6  current=6
+ 335s  cpu=7%  desired=2  current=6
+ 350s  cpu=5%  desired=2  current=2
+ 365s  cpu=3%  desired=2  current=2
+ 381s  cpu=5%  desired=2  current=2
+ 396s  cpu=5%  desired=2  current=2
+ 411s  cpu=4%  desired=2  current=2
+done

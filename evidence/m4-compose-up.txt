@@ -1,0 +1,88 @@
+$ docker compose up --build -d
+# (BuildKit output filtered to build-step and container lines; full log is longer)
+#1 DONE 0.0s
+#2 [backend internal] load build definition from Dockerfile
+#2 DONE 0.0s
+#3 [frontend internal] load build definition from Dockerfile
+#3 DONE 0.0s
+#4 [frontend] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#4 DONE 2.4s
+#6 [frontend internal] load metadata for docker.io/library/node:22-alpine
+#7 [backend internal] load metadata for docker.io/library/python:3.12-slim
+#7 DONE 1.6s
+#8 [backend internal] load .dockerignore
+#8 DONE 0.0s
+#9 DONE 0.0s
+#10 [backend internal] load build context
+#10 DONE 0.0s
+#11 [backend deps 4/4] RUN /opt/venv/bin/pip install -r requirements.txt  && /opt/venv/bin/pip uninstall -y pip setuptools wheel
+#12 [backend runtime 5/8] COPY alembic.ini docker-entrypoint.sh ./
+#13 [backend runtime 3/8] WORKDIR /app
+#14 [backend runtime 2/8] RUN apt-get update && apt-get upgrade -y --no-install-recommends  && rm -rf /var/lib/apt/lists/*  && (python -m pip uninstall -y pip setuptools wheel || true)  && rm -rf /usr/local/lib/python3.12/ensurepip
+#15 [backend deps 3/4] COPY requirements.txt .
+#16 [backend runtime 4/8] COPY --from=deps /opt/venv /opt/venv
+#17 [backend runtime 7/8] COPY app ./app
+#18 [backend deps 2/4] RUN python -m venv /opt/venv
+#19 [backend runtime 6/8] COPY alembic ./alembic
+#20 [backend runtime 8/8] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin app  && chmod 0555 docker-entrypoint.sh
+#21 [backend] exporting to image
+#21 naming to docker.io/library/shelflend-backend:latest done
+#21 DONE 0.0s
+#22 [backend] resolving provenance for metadata file
+#22 DONE 0.0s
+#23 [frontend internal] load metadata for docker.io/nginxinc/nginx-unprivileged:1.29-alpine
+#6 [frontend internal] load metadata for docker.io/library/node:22-alpine
+#6 DONE 2.1s
+#23 [frontend internal] load metadata for docker.io/nginxinc/nginx-unprivileged:1.29-alpine
+#23 DONE 2.1s
+#24 [frontend internal] load .dockerignore
+#24 DONE 1.4s
+#25 DONE 0.0s
+#26 DONE 0.0s
+#27 [frontend internal] load build context
+#27 DONE 0.0s
+#28 [frontend build 6/7] COPY src ./src
+#29 [frontend runtime 3/4] COPY --chown=101:101 nginx/default.conf.template /etc/nginx/templates/default.conf.template
+#30 [frontend build 5/7] COPY index.html vite.config.js ./
+#31 [frontend build 3/7] COPY package.json package-lock.json ./
+#32 [frontend build 7/7] RUN npm run build
+#33 [frontend build 2/7] WORKDIR /src
+#34 [frontend runtime 2/4] RUN apk del --no-cache nginx-module-image-filter nginx-module-xslt nginx-module-geoip nginx-module-njs 2>/dev/null || true  && apk upgrade --no-cache
+#35 [frontend build 4/7] RUN npm ci --no-audit --no-fund
+#36 [frontend runtime 4/4] COPY --from=build --chown=101:101 /src/dist /usr/share/nginx/html
+#37 [frontend] exporting to image
+#37 naming to docker.io/library/shelflend-frontend:latest done
+#37 DONE 0.0s
+#38 [frontend] resolving provenance for metadata file
+#38 DONE 0.0s
+ Image shelflend-backend Built 
+ Image shelflend-frontend Built 
+ Network shelflend_default Creating 
+ Volume shelflend_pgdata Creating 
+ Volume shelflend_pgdata Creating 
+ Network shelflend_default Creating 
+ Volume shelflend_pgdata Created 
+ Volume shelflend_pgdata Created 
+ Network shelflend_default Created 
+ Network shelflend_default Created 
+ Container shelflend-postgres-1 Creating 
+ Container shelflend-postgres-1 Created 
+ Container shelflend-backend-1 Creating 
+ Container shelflend-backend-1 Created 
+ Container shelflend-frontend-1 Creating 
+ Container shelflend-frontend-1 Created 
+ Container shelflend-postgres-1 Starting 
+ Container shelflend-postgres-1 Started 
+ Container shelflend-postgres-1 Waiting 
+ Container shelflend-postgres-1 Healthy 
+ Container shelflend-backend-1 Starting 
+ Container shelflend-backend-1 Started 
+ Container shelflend-backend-1 Waiting 
+ Container shelflend-backend-1 Healthy 
+ Container shelflend-frontend-1 Starting 
+ Container shelflend-frontend-1 Started 
+$ docker compose ps
+SERVICE    IMAGE                STATUS                                     PORTS
+backend    shelflend-backend    Up 5 seconds (healthy)                     0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+frontend   shelflend-frontend   Up Less than a second (health: starting)   0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp
+postgres   postgres:17-alpine   Up 11 seconds (healthy)                    5432/tcp

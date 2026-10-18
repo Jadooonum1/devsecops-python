@@ -1,0 +1,33 @@
+$ kubectl -n shelflend get pods -o wide
+NAME                                  READY   STATUS      RESTARTS   AGE   IP            NODE               NOMINATED NODE   READINESS GATES
+migration-race-dgr8r                  0/1     Completed   0          16m   10.244.1.36   shelflend-worker   <none>           <none>
+migration-race-nt2vs                  0/1     Completed   0          16m   10.244.1.38   shelflend-worker   <none>           <none>
+migration-race-r5rfd                  0/1     Completed   0          16m   10.244.1.37   shelflend-worker   <none>           <none>
+shelflend-backend-85cb974698-68pvx    1/1     Running     0          19s   10.244.1.56   shelflend-worker   <none>           <none>
+shelflend-backend-85cb974698-vj9pr    1/1     Running     0          35s   10.244.1.55   shelflend-worker   <none>           <none>
+shelflend-frontend-78c6c445cc-9qw6n   1/1     Running     0          17s   10.244.1.57   shelflend-worker   <none>           <none>
+shelflend-frontend-78c6c445cc-nxq2s   1/1     Running     0          35s   10.244.1.54   shelflend-worker   <none>           <none>
+shelflend-postgres-0                  1/1     Running     0          33m   10.244.1.23   shelflend-worker   <none>           <none>
+$ kubectl -n shelflend get svc
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+shelflend-backend    ClusterIP   10.96.219.11    <none>        8000/TCP   33m
+shelflend-frontend   ClusterIP   10.96.176.149   <none>        80/TCP     33m
+shelflend-postgres   ClusterIP   None            <none>        5432/TCP   33m
+$ kubectl -n shelflend get ingress
+NAME        CLASS   HOSTS             ADDRESS     PORTS   AGE
+shelflend   nginx   shelflend.local   localhost   80      33m
+$ kubectl -n shelflend get hpa,pdb
+NAME                                                    REFERENCE                      TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/shelflend-backend   Deployment/shelflend-backend   cpu: <unknown>/60%   2         6         2          33m
+
+NAME                                            MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+poddisruptionbudget.policy/shelflend-backend    1               N/A               1                     33m
+poddisruptionbudget.policy/shelflend-frontend   1               N/A               1                     33m
+$ kubectl -n argocd get application shelflend
+NAME        SYNC STATUS   HEALTH STATUS
+shelflend   Synced        Degraded
+$ helm list -n shelflend-staging
+NAME     	NAMESPACE        	REVISION	UPDATED                             	STATUS  	CHART          	APP VERSION
+shelflend	shelflend-staging	2       	2026-10-18 20:00:25.440443 +0530 IST	deployed	shelflend-1.0.0	1.0.0      
+$ curl -s -H 'Host: shelflend.local' http://127.0.0.1/api/info
+{"app":"ShelfLend","version":"2e34417","pod":"shelflend-backend-85cb974698-68pvx","rules":{"loan_days":14,"max_renewals":2,"fine_per_day":10,"fine_block_limit":100,"default_max_loans":3}}

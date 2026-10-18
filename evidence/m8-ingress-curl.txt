@@ -1,0 +1,16 @@
+$ curl -s -H 'Host: shelflend.local' http://127.0.0.1/api/info
+{"app":"ShelfLend","version":"8d6a30f","pod":"shelflend-backend-5654bd665d-hmlxn","rules":{"loan_days":14,"max_renewals":2,"fine_per_day":10,"fine_block_limit":100,"default_max_loans":3}}
+$ curl -s -H 'Host: shelflend.local' http://127.0.0.1/api/stats
+{"books":14,"members":8,"copies":{"available":13,"on_loan":11,"maintenance":1,"lost":0},"active_loans":11,"overdue_loans":3,"fines_outstanding":0}
+$ curl -s -o /dev/null -w '%{http_code} %{content_type}\n' -H 'Host: shelflend.local' http://127.0.0.1/
+200 text/html
+$ kubectl -n shelflend exec shelflend-postgres-0 -- psql -U shelflend -c 'SELECT id, title, author FROM books ORDER BY id LIMIT 5'
+ id |           title            |              author              
+----+----------------------------+----------------------------------
+  1 | Effective Java             | Joshua Bloch
+  2 | The Pragmatic Programmer   | David Thomas, Andrew Hunt
+  3 | Introduction to Algorithms | Cormen, Leiserson, Rivest, Stein
+  4 | Kubernetes: Up and Running | Brendan Burns et al.
+  5 | Terraform: Up & Running    | Yevgeniy Brikman
+(5 rows)
+

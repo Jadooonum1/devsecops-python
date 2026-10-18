@@ -11,4 +11,7 @@ regexes = [
 ]
 paths = [
   '''docs/course-README\.md''',
+  # Terraform output captured from the moto emulator: random fake resource IDs
+  # (e.g. sg-ymldbi3dvrmr0rciu) and a dummy CA trip the generic-api-key rule.
+  '''evidence/m7-terraform-.*\.txt''',
 ]

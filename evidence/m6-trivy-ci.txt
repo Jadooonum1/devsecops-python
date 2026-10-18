@@ -1,0 +1,186 @@
+# GitHub Actions run 39137097931 (commit 2e34417), step 'Trivy scan each platform'
+# from: gh run view --job <id> --log   (timestamps stripped; per-package METADATA rows and blob-copy lines omitted)
+
+######## Build + Trivy (backend) ########
+===== linux/amd64 =====
+Unable to find image 'aquasec/trivy:0.75.0' locally
+0.75.0: Pulling from aquasec/trivy
+e2de96513ba9: Already exists
+c716e0146a8a: Pulling fs layer
+08201c795fbc: Pulling fs layer
+e3614b31dd78: Pulling fs layer
+e3614b31dd78: Verifying Checksum
+e3614b31dd78: Download complete
+c716e0146a8a: Verifying Checksum
+c716e0146a8a: Download complete
+08201c795fbc: Verifying Checksum
+08201c795fbc: Download complete
+c716e0146a8a: Pull complete
+08201c795fbc: Pull complete
+e3614b31dd78: Pull complete
+Digest: sha256:af6acf9a6b85dfe389a1941505c0ce9efef52a4719635e1a962f022a3d855daa
+Status: Downloaded newer image for aquasec/trivy:0.75.0
+2026-10-18T14:43:39Z	INFO	Loaded	file_path="/cfg/trivy.yaml"
+2026-10-18T14:43:39Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:43:39Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="ghcr.io/aquasecurity/trivy-db:2"
+2026-10-18T14:43:39Z	INFO	[vulndb] Need to update DB
+2026-10-18T14:43:39Z	INFO	[vulndb] Downloading vulnerability DB...
+2026-10-18T14:43:39Z	INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2.51 MiB / 128.46 MiB [->____________________________________________________________] 1.95% ? p/s ?29.93 MiB / 128.46 MiB [------------->______________________________________________] 23.30% ? p/s ?66.69 MiB / 128.46 MiB [------------------------------->____________________________] 51.92% ? p/s ?103.12 MiB / 128.46 MiB [------------------------------------>________] 80.28% 167.72 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 167.72 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 167.72 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 159.62 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 159.62 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 159.62 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 149.32 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 149.32 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 149.32 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 139.69 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 139.69 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 139.69 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 130.68 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 130.68 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 130.68 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [-----------------------------------------------] 100.00% 37.26 MiB p/s 3.6s2026-10-18T14:43:43Z	INFO	[vulndb] Artifact successfully downloaded	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:43:43Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-18T14:43:43Z	INFO	[secret] Secret scanning is enabled
+2026-10-18T14:43:43Z	INFO	[secret] If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-10-18T14:43:43Z	INFO	[secret] Please see https://trivy.dev/docs/v0.75/guide/scanner/secret#recommendation for faster secret detection
+2026-10-18T14:43:45Z	INFO	Detected OS	family="debian" version="13.7"
+2026-10-18T14:43:45Z	INFO	[debian] Detecting vulnerabilities...	os_version="13" pkg_num=87
+2026-10-18T14:43:45Z	INFO	Number of language-specific files	num=1
+2026-10-18T14:43:45Z	INFO	[python-pkg] Detecting vulnerabilities...
+2026-10-18T14:43:45Z	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.75/guide/scanner/vulnerability#severity-selection for details.
+
+Report Summary
+
+
+📣 Notices:
+  - Version 0.76.0 of Trivy is now available, current version is 0.75.0
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+
+┌──────────────────────────────────────────────────────────────────────────────────┬────────────┬─────────────────┬─────────┐
+│                                      Target                                      │    Type    │ Vulnerabilities │ Secrets │
+│ /work/amd64.tar (debian 13.7)                                                    │   debian   │        0        │    -    │
+│ opt/venv/lib/python3.12/site-packages/opentelemetry_api-1.45.1.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+│ opt/venv/lib/python3.12/site-packages/prometheus_client-0.26.0.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+│ opt/venv/lib/python3.12/site-packages/prometheus_fastapi_instrumentator-8.1.0.d- │ python-pkg │        0        │    -    │
+│ opt/venv/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+└──────────────────────────────────────────────────────────────────────────────────┴────────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+===== linux/arm64 =====
+2026-10-18T14:43:54Z	INFO	Loaded	file_path="/cfg/trivy.yaml"
+2026-10-18T14:43:54Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:43:54Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="ghcr.io/aquasecurity/trivy-db:2"
+2026-10-18T14:43:54Z	INFO	[vulndb] Need to update DB
+2026-10-18T14:43:54Z	INFO	[vulndb] Downloading vulnerability DB...
+2026-10-18T14:43:54Z	INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2.19 MiB / 128.46 MiB [->____________________________________________________________] 1.70% ? p/s ?23.65 MiB / 128.46 MiB [----------->________________________________________________] 18.41% ? p/s ?48.93 MiB / 128.46 MiB [---------------------->_____________________________________] 38.09% ? p/s ?80.74 MiB / 128.46 MiB [---------------------------->_________________] 62.85% 130.93 MiB p/s ETA 0s115.07 MiB / 128.46 MiB [---------------------------------------->____] 89.58% 130.93 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 130.93 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 127.61 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 127.61 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 127.61 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 119.38 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 119.38 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 119.38 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 111.67 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 111.67 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 111.67 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 104.47 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 104.47 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [-----------------------------------------------] 100.00% 38.29 MiB p/s 3.6s2026-10-18T14:43:57Z	INFO	[vulndb] Artifact successfully downloaded	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:43:57Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-18T14:43:57Z	INFO	[secret] Secret scanning is enabled
+2026-10-18T14:43:57Z	INFO	[secret] If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-10-18T14:43:57Z	INFO	[secret] Please see https://trivy.dev/docs/v0.75/guide/scanner/secret#recommendation for faster secret detection
+2026-10-18T14:44:00Z	INFO	Detected OS	family="debian" version="13.7"
+2026-10-18T14:44:00Z	INFO	[debian] Detecting vulnerabilities...	os_version="13" pkg_num=87
+2026-10-18T14:44:00Z	INFO	Number of language-specific files	num=1
+2026-10-18T14:44:00Z	INFO	[python-pkg] Detecting vulnerabilities...
+2026-10-18T14:44:00Z	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.75/guide/scanner/vulnerability#severity-selection for details.
+
+📣 Notices:
+  - Version 0.76.0 of Trivy is now available, current version is 0.75.0
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+
+
+Report Summary
+
+┌──────────────────────────────────────────────────────────────────────────────────┬────────────┬─────────────────┬─────────┐
+│                                      Target                                      │    Type    │ Vulnerabilities │ Secrets │
+│ /work/arm64.tar (debian 13.7)                                                    │   debian   │        0        │    -    │
+│ opt/venv/lib/python3.12/site-packages/opentelemetry_api-1.45.1.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+│ opt/venv/lib/python3.12/site-packages/prometheus_client-0.26.0.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+│ opt/venv/lib/python3.12/site-packages/prometheus_fastapi_instrumentator-8.1.0.d- │ python-pkg │        0        │    -    │
+│ opt/venv/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+└──────────────────────────────────────────────────────────────────────────────────┴────────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+######## Build + Trivy (frontend) ########
+===== linux/amd64 =====
+Unable to find image 'aquasec/trivy:0.75.0' locally
+0.75.0: Pulling from aquasec/trivy
+e2de96513ba9: Already exists
+c716e0146a8a: Pulling fs layer
+08201c795fbc: Pulling fs layer
+e3614b31dd78: Pulling fs layer
+e3614b31dd78: Verifying Checksum
+e3614b31dd78: Download complete
+c716e0146a8a: Verifying Checksum
+c716e0146a8a: Download complete
+08201c795fbc: Verifying Checksum
+08201c795fbc: Download complete
+c716e0146a8a: Pull complete
+08201c795fbc: Pull complete
+e3614b31dd78: Pull complete
+Digest: sha256:af6acf9a6b85dfe389a1941505c0ce9efef52a4719635e1a962f022a3d855daa
+Status: Downloaded newer image for aquasec/trivy:0.75.0
+2026-10-18T14:42:06Z	INFO	Loaded	file_path="/cfg/trivy.yaml"
+2026-10-18T14:42:06Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:42:06Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="ghcr.io/aquasecurity/trivy-db:2"
+2026-10-18T14:42:06Z	INFO	[vulndb] Need to update DB
+2026-10-18T14:42:06Z	INFO	[vulndb] Downloading vulnerability DB...
+2026-10-18T14:42:06Z	INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
+49.69 MiB / 128.46 MiB [----------------------->____________________________________] 38.68% ? p/s ?119.07 MiB / 128.46 MiB [------------------------------------------------------>____] 92.69% ? p/s ?128.46 MiB / 128.46 MiB [--------------------------------------------------------->] 100.00% ? p/s ?128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 131.63 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 131.63 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 131.63 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 123.14 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 123.14 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 123.14 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 115.20 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 115.20 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 115.20 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 107.76 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 107.76 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 107.76 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 100.81 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 100.81 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 100.81 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [-------------------------------------------->] 100.00% 94.31 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [-----------------------------------------------] 100.00% 34.51 MiB p/s 3.9s2026-10-18T14:42:12Z	INFO	[vulndb] Artifact successfully downloaded	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:42:12Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-18T14:42:12Z	INFO	[secret] Secret scanning is enabled
+2026-10-18T14:42:12Z	INFO	[secret] If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-10-18T14:42:12Z	INFO	[secret] Please see https://trivy.dev/docs/v0.75/guide/scanner/secret#recommendation for faster secret detection
+2026-10-18T14:42:12Z	INFO	Detected OS	family="alpine" version="3.23.4"
+2026-10-18T14:42:12Z	INFO	[alpine] Detecting vulnerabilities...	os_version="3.23" repository="3.23" pkg_num=31
+2026-10-18T14:42:12Z	INFO	Number of language-specific files	num=0
+
+
+📣 Notices:
+  - Version 0.76.0 of Trivy is now available, current version is 0.75.0
+Report Summary
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+
+
+┌─────────────────────────────────┬────────┬─────────────────┬─────────┐
+│             Target              │  Type  │ Vulnerabilities │ Secrets │
+│ /work/amd64.tar (alpine 3.23.4) │ alpine │        0        │    -    │
+└─────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+===== linux/arm64 =====
+2026-10-18T14:42:16Z	INFO	Loaded	file_path="/cfg/trivy.yaml"
+2026-10-18T14:42:16Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:42:16Z	INFO	Adding schema version to the DB repository for backward compatibility	repository="ghcr.io/aquasecurity/trivy-db:2"
+2026-10-18T14:42:16Z	INFO	[vulndb] Need to update DB
+2026-10-18T14:42:16Z	INFO	[vulndb] Downloading vulnerability DB...
+2026-10-18T14:42:16Z	INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
+29.91 MiB / 128.46 MiB [------------->______________________________________________] 23.28% ? p/s ?67.47 MiB / 128.46 MiB [------------------------------->____________________________] 52.52% ? p/s ?101.56 MiB / 128.46 MiB [---------------------------------------------->____________] 79.06% ? p/s ?128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 164.28 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 164.28 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 164.28 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 153.68 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 153.68 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 153.68 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 143.77 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 143.77 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 143.77 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 134.49 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 134.49 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 134.49 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 125.81 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 125.81 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 125.81 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 117.70 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 117.70 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [------------------------------------------->] 100.00% 117.70 MiB p/s ETA 0s128.46 MiB / 128.46 MiB [-----------------------------------------------] 100.00% 31.46 MiB p/s 4.3s2026-10-18T14:42:22Z	INFO	[vulndb] Artifact successfully downloaded	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2026-10-18T14:42:22Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-18T14:42:22Z	INFO	[secret] Secret scanning is enabled
+2026-10-18T14:42:22Z	INFO	[secret] If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-10-18T14:42:22Z	INFO	[secret] Please see https://trivy.dev/docs/v0.75/guide/scanner/secret#recommendation for faster secret detection
+2026-10-18T14:42:22Z	INFO	Detected OS	family="alpine" version="3.23.4"
+2026-10-18T14:42:22Z	INFO	[alpine] Detecting vulnerabilities...	os_version="3.23" repository="3.23" pkg_num=31
+2026-10-18T14:42:22Z	INFO	Number of language-specific files	num=0
+
+📣 Notices:
+  - Version 0.76.0 of Trivy is now available, current version is 0.75.0
+
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+
+Report Summary
+
+┌─────────────────────────────────┬────────┬─────────────────┬─────────┐
+│             Target              │  Type  │ Vulnerabilities │ Secrets │
+│ /work/arm64.tar (alpine 3.23.4) │ alpine │        0        │    -    │
+└─────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+

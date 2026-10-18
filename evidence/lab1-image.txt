@@ -1,0 +1,21 @@
+$ kubectl apply -f troubleshooting/01-broken-image.yaml
+deployment.apps/lab-broken-image created
+$ kubectl -n shelflend-labs get pods -l lab=broken-image
+NAME                                READY   STATUS             RESTARTS   AGE
+lab-broken-image-84444c7788-zf7kb   0/1     ImagePullBackOff   0          25s
+$ kubectl -n shelflend-labs describe pod -l lab=broken-image | grep -E 'Failed|Back-off' | head -4
+  Normal   BackOff    22s               kubelet            spec.containers{web}: Back-off pulling image "nginxinc/nginx-unprivlieged:1.29-alpine"
+  Warning  Failed     22s               kubelet            spec.containers{web}: Error: ImagePullBackOff
+  Warning  Failed     5s (x2 over 23s)  kubelet            spec.containers{web}: Failed to pull image "nginxinc/nginx-unprivlieged:1.29-alpine": failed to pull and unpack image "docker.io/nginxinc/nginx-unprivlieged:1.29-alpine": failed to resolve reference "docker.io/nginxinc/nginx-unprivlieged:1.29-alpine": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     5s (x2 over 23s)  kubelet            spec.containers{web}: Error: ErrImagePull
+$ kubectl -n shelflend-labs set image deploy/lab-broken-image web=nginxinc/nginx-unprivileged:1.29-alpine
+deployment.apps/lab-broken-image image updated
+$ kubectl -n shelflend-labs rollout status deploy/lab-broken-image --timeout=120s
+Waiting for deployment "lab-broken-image" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "lab-broken-image" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "lab-broken-image" rollout to finish: 1 old replicas are pending termination...
+deployment "lab-broken-image" successfully rolled out
+$ kubectl -n shelflend-labs get pods -l lab=broken-image
+NAME                                READY   STATUS        RESTARTS   AGE
+lab-broken-image-84444c7788-zf7kb   0/1     Terminating   0          36s
+lab-broken-image-88bc4585d-bj48d    1/1     Running       0          11s

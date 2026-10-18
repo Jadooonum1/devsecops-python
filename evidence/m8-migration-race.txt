@@ -1,0 +1,34 @@
+$ kubectl -n shelflend exec shelflend-postgres-0 -- sh -c 'dropdb -U shelflend --if-exists race && createdb -U shelflend race'
+NOTICE:  database "race" does not exist, skipping
+$ sed 's/IMAGE_TAG/8d6a30f977b3e767db084de559ee3b4bfba6b21f/' k8s/migration-race-job.yaml | kubectl apply -f -
+job.batch/migration-race created
+$ kubectl -n shelflend wait --for=condition=complete job/migration-race --timeout=180s
+job.batch/migration-race condition met
+$ kubectl -n shelflend get pods -l job-name=migration-race
+NAME                   READY   STATUS      RESTARTS   AGE
+migration-race-dgr8r   0/1     Completed   0          4s
+migration-race-nt2vs   0/1     Completed   0          4s
+migration-race-r5rfd   0/1     Completed   0          4s
+$ kubectl -n shelflend logs -l job-name=migration-race --prefix --tail=-1 | sed -E 's#^\[pod/(migration-race-[a-z0-9]+)/migrate\]#\1 |#'
+migration-race-dgr8r | pod migration-race-dgr8r starting
+migration-race-dgr8r | waiting for migration lock
+migration-race-dgr8r | acquired migration lock
+migration-race-dgr8r | INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+migration-race-dgr8r | INFO  [alembic.runtime.migration] Will assume transactional DDL.
+migration-race-dgr8r | INFO  [alembic.runtime.migration] Running upgrade  -> 0001, catalogue (books, copies) and members
+migration-race-dgr8r | INFO  [alembic.runtime.migration] Running upgrade 0001 -> 0002, loans with lending rules enforced in the database, plus the audit trail
+migration-race-dgr8r | pod migration-race-dgr8r done
+migration-race-nt2vs | pod migration-race-nt2vs starting
+migration-race-nt2vs | waiting for migration lock
+migration-race-nt2vs | acquired migration lock
+migration-race-nt2vs | INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+migration-race-nt2vs | INFO  [alembic.runtime.migration] Will assume transactional DDL.
+migration-race-nt2vs | pod migration-race-nt2vs done
+migration-race-r5rfd | pod migration-race-r5rfd starting
+migration-race-r5rfd | waiting for migration lock
+migration-race-r5rfd | acquired migration lock
+migration-race-r5rfd | INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+migration-race-r5rfd | INFO  [alembic.runtime.migration] Will assume transactional DDL.
+migration-race-r5rfd | pod migration-race-r5rfd done
+$ kubectl -n shelflend logs -l job-name=migration-race --tail=-1 | grep -c 'Running upgrade  -> 0001'
+1

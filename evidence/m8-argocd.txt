@@ -1,0 +1,9 @@
+$ kubectl -n argocd get applications.argoproj.io
+NAME        SYNC STATUS   HEALTH STATUS
+shelflend   Synced        Healthy
+$ kubectl -n argocd get application shelflend -o jsonpath='{.status.sync.revision}{"  "}{.status.sync.status}{"/"}{.status.health.status}{"\n"}'
+bc24920014cf5a26611461fb96abe1dbdf9554ce  Synced/Healthy
+$ git log --oneline -3 -- gitops/values-gitops.yaml
+bc24920 gitops: promote 8d6a30f to production
+6fb3317 gitops: promote 540d05c to production
+74f5ef7 gitops: Argo CD application and kube-prometheus-stack values

@@ -1,0 +1,59 @@
+$ cd backend && python -m pytest -v --cov=app
+============================= test session starts ==============================
+platform darwin -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0 -- /Users/parthagarwal/Documents/devsecops-python/backend/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/parthagarwal/Documents/devsecops-python/backend
+configfile: pytest.ini
+testpaths: tests
+plugins: cov-7.1.0, anyio-4.15.1
+collecting ... collected 32 items
+
+tests/test_api.py::test_health_does_not_need_db PASSED                   [  3%]
+tests/test_api.py::test_ready_checks_schema PASSED                       [  6%]
+tests/test_api.py::test_info_publishes_lending_rules PASSED              [  9%]
+tests/test_api.py::test_create_book_normalises_isbn PASSED               [ 12%]
+tests/test_api.py::test_duplicate_isbn_is_409 PASSED                     [ 15%]
+tests/test_api.py::test_invalid_isbn_is_422 PASSED                       [ 18%]
+tests/test_api.py::test_blank_title_is_422 PASSED                        [ 21%]
+tests/test_api.py::test_list_and_search_books PASSED                     [ 25%]
+tests/test_api.py::test_get_missing_book_is_404 PASSED                   [ 28%]
+tests/test_api.py::test_update_book PASSED                               [ 31%]
+tests/test_api.py::test_delete_book_without_loans PASSED                 [ 34%]
+tests/test_api.py::test_delete_book_with_loan_history_is_409 PASSED      [ 37%]
+tests/test_api.py::test_copy_counts_on_book PASSED                       [ 40%]
+tests/test_api.py::test_duplicate_barcode_is_409 PASSED                  [ 43%]
+tests/test_api.py::test_copy_to_maintenance_and_back PASSED              [ 46%]
+tests/test_api.py::test_duplicate_member_email_is_409 PASSED             [ 50%]
+tests/test_api.py::test_update_and_delete_member PASSED                  [ 53%]
+tests/test_api.py::test_invalid_member_email_is_422 PASSED               [ 56%]
+tests/test_api.py::test_borrow_marks_copy_on_loan PASSED                 [ 59%]
+tests/test_api.py::test_same_copy_cannot_be_lent_twice PASSED            [ 62%]
+tests/test_api.py::test_database_refuses_second_active_loan PASSED       [ 65%]
+tests/test_api.py::test_member_loan_limit PASSED                         [ 68%]
+tests/test_api.py::test_copy_in_maintenance_cannot_be_borrowed PASSED    [ 71%]
+tests/test_api.py::test_borrow_unknown_member_is_404 PASSED              [ 75%]
+tests/test_api.py::test_return_on_time_has_no_fine PASSED                [ 78%]
+tests/test_api.py::test_returning_twice_is_409 PASSED                    [ 81%]
+tests/test_api.py::test_late_return_charges_fine_and_blocks_borrowing PASSED [ 84%]
+tests/test_api.py::test_renew_extends_due_date_up_to_limit PASSED        [ 87%]
+tests/test_api.py::test_overdue_loan_cannot_be_renewed PASSED            [ 90%]
+tests/test_api.py::test_mark_lost_closes_loan_and_copy PASSED            [ 93%]
+tests/test_api.py::test_stats_and_activity_feed PASSED                   [ 96%]
+tests/test_api.py::test_metrics_exposes_http_and_business_gauges PASSED  [100%]
+
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.15-final-0 _______________
+
+Name                 Stmts   Miss  Cover
+----------------------------------------
+app/__init__.py          0      0   100%
+app/config.py           20      1    95%
+app/db.py               17      0   100%
+app/main.py            295     19    94%
+app/metrics.py          31      3    90%
+app/models.py           59      0   100%
+app/schemas.py          87      1    99%
+app/wait_for_db.py      21     21     0%
+----------------------------------------
+TOTAL                  530     45    92%
+============================== 32 passed in 1.23s ==============================

@@ -1,0 +1,37 @@
+$ kubectl -n shelflend port-forward svc/shelflend-backend 18000:8000 &
+$ curl -s localhost:18000/metrics | grep -E '^shelflend_|^# (HELP|TYPE) shelflend_loans'
+shelflend_copies{status="available"} 13.0
+shelflend_copies{status="on_loan"} 11.0
+shelflend_copies{status="maintenance"} 1.0
+shelflend_copies{status="lost"} 0.0
+# HELP shelflend_loans_active Loans currently out
+# TYPE shelflend_loans_active gauge
+shelflend_loans_active 11.0
+# HELP shelflend_loans_overdue Active loans past their due date
+# TYPE shelflend_loans_overdue gauge
+shelflend_loans_overdue 3.0
+shelflend_fines_outstanding_rupees 0.0
+shelflend_db_up 1.0
+$ curl -s localhost:18000/metrics | grep -E '^http_requests_total|^http_request_duration_seconds_bucket\{handler="/api/loans",le=' | head -22
+http_requests_total{handler="/api/books",method="POST",status="2xx"} 9.0
+http_requests_total{handler="/api/books/{book_id}/copies",method="POST",status="2xx"} 12.0
+http_requests_total{handler="/api/members",method="POST",status="2xx"} 3.0
+http_requests_total{handler="/api/members",method="GET",status="2xx"} 1.0
+http_requests_total{handler="/api/copies",method="GET",status="2xx"} 1.0
+http_requests_total{handler="/api/loans",method="POST",status="2xx"} 6.0
+http_requests_total{handler="/api/loans/{loan_id}/return",method="POST",status="2xx"} 1.0
+http_requests_total{handler="/api/copies/{copy_id}",method="PATCH",status="2xx"} 1.0
+http_requests_total{handler="/api/stats",method="GET",status="2xx"} 2.0
+http_requests_total{handler="/api/info",method="GET",status="2xx"} 1.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.005",method="POST"} 5.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.01",method="POST"} 5.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.025",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.05",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.1",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.25",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="0.5",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="1.0",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="2.5",method="POST"} 6.0
+http_request_duration_seconds_bucket{handler="/api/loans",le="+Inf",method="POST"} 6.0
+Unable to listen on port 18000: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:18000: bind: address already in use unable to create listener: Error listen tcp6 [::1]:18000: bind: address already in use]
+error: unable to listen on any of the requested ports: [{18000 8000}]

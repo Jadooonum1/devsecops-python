@@ -1,0 +1,43 @@
+$ curl -s localhost:3000/api/info
+{"app":"ShelfLend","version":"compose","pod":"0168b867aa70","rules":{"loan_days":14,"max_renewals":2,"fine_per_day":10,"fine_block_limit":100,"default_max_loans":3}}
+$ curl -s -XPOST localhost:3000/api/books -H 'content-type: application/json' -d '{"isbn":"978-0-262-04630-5","title":"Introduction to Algorithms","author":"Cormen et al."}'
+{"id":1,"isbn":"9780262046305","title":"Introduction to Algorithms","author":"Cormen et al.","genre":null,"published_year":null,"created_at":"2026-10-18T14:25:49.403130Z","total_copies":0,"available_copies":0}
+$ curl -s -XPOST localhost:3000/api/books/1/copies -H 'content-type: application/json' -d '{"barcode":"SL-001-1","shelf":"CS-2"}'
+{"id":1,"book_id":1,"barcode":"SL-001-1","shelf":"CS-2","status":"available","book_title":"Introduction to Algorithms"}
+$ curl -s -XPOST localhost:3000/api/members -H 'content-type: application/json' -d '{"name":"Ananya Iyer","email":"ananya@example.edu"}'
+{"id":1,"name":"Ananya Iyer","email":"ananya@example.edu","max_loans":3,"created_at":"2026-10-18T14:25:49.432265Z","active_loans":0,"unpaid_fines":0}
+$ curl -s -XPOST localhost:3000/api/loans -H 'content-type: application/json' -d '{"copy_id":1,"member_id":1}'
+{"id":1,"copy_id":1,"member_id":1,"status":"active","borrowed_at":"2026-10-18T14:25:49.443400Z","due_at":"2026-11-01T14:25:49.443400Z","returned_at":null,"renewals":0,"fine":0,"fine_paid":false,"overdue":false,"days_overdue":0,"book_title":"Introduction to Algorithms","barcode":"SL-001-1","member_name":"Ananya Iyer"}
+$ curl -s -w ' HTTP %{http_code}' -XPOST localhost:3000/api/loans -H 'content-type: application/json' -d '{"copy_id":1,"member_id":1}'
+{"detail":"copy SL-001-1 is on loan"} HTTP 409
+$ curl -s -XPUT localhost:3000/api/books/1 -H 'content-type: application/json' -d '{"isbn":"9780262046305","title":"Introduction to Algorithms, 4th ed.","author":"Cormen, Leiserson, Rivest, Stein"}'
+{"id":1,"isbn":"9780262046305","title":"Introduction to Algorithms, 4th ed.","author":"Cormen, Leiserson, Rivest, Stein","genre":null,"published_year":null,"created_at":"2026-10-18T14:25:49.403130Z","total_copies":1,"available_copies":0}
+$ curl -s -o /dev/null -w 'DELETE book with loan history -> HTTP %{http_code}\n' -XDELETE localhost:3000/api/books/1
+DELETE book with loan history -> HTTP 409
+
+$ docker compose exec -T postgres psql -U shelflend -c '\dt'
+              List of relations
+ Schema |      Name       | Type  |   Owner   
+--------+-----------------+-------+-----------
+ public | alembic_version | table | shelflend
+ public | audit_events    | table | shelflend
+ public | books           | table | shelflend
+ public | copies          | table | shelflend
+ public | loans           | table | shelflend
+ public | members         | table | shelflend
+(6 rows)
+
+
+$ docker compose exec -T postgres psql -U shelflend -c 'SELECT l.id, c.barcode, m.name, l.status, l.due_at::date FROM loans l JOIN copies c ON c.id=l.copy_id JOIN members m ON m.id=l.member_id'
+ id | barcode  |    name     | status |   due_at   
+----+----------+-------------+--------+------------
+  1 | SL-001-1 | Ananya Iyer | active | 2026-11-01
+(1 row)
+
+
+$ docker compose exec -T backend id
+uid=10001(app) gid=10001(app) groups=10001(app)
+
+$ docker compose exec -T frontend id
+uid=101(nginx) gid=101(nginx) groups=101(nginx)
+

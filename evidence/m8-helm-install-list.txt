@@ -1,0 +1,25 @@
+$ kubectl apply -f k8s/namespace.yaml
+namespace/shelflend unchanged
+namespace/shelflend-staging unchanged
+$ helm upgrade --install shelflend ./helm/shelflend -n shelflend-staging -f helm/shelflend/values-staging.yaml --set backend.image.tag=8d6a30f977b3e767db084de559ee3b4bfba6b21f --set frontend.image.tag=8d6a30f977b3e767db084de559ee3b4bfba6b21f --wait
+Release "shelflend" has been upgraded. Happy Helming!
+NAME: shelflend
+LAST DEPLOYED: Sun Oct 18 20:00:25 2026
+NAMESPACE: shelflend-staging
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+ShelfLend 8d6a30f is deployed to namespace shelflend-staging.
+
+  App:      http://staging.shelflend.local/
+  API docs: http://staging.shelflend.local/docs
+
+  kubectl -n shelflend-staging get pods,svc,ingress
+$ helm list -A
+NAME          	NAMESPACE        	REVISION	UPDATED                             	STATUS  	CHART                       	APP VERSION
+argocd        	argocd           	1       	2026-10-18 19:40:04.788648 +0530 IST	deployed	argo-cd-10.10.5             	v3.5.5     
+metrics-server	kube-system      	1       	2026-10-18 19:37:43.359704 +0530 IST	deployed	metrics-server-3.14.0       	0.9.0      
+monitoring    	monitoring       	1       	2026-10-18 19:40:07.148444 +0530 IST	deployed	kube-prometheus-stack-92.8.0	v0.94.1    
+shelflend     	shelflend-staging	2       	2026-10-18 20:00:25.440443 +0530 IST	deployed	shelflend-1.0.0             	1.0.0      

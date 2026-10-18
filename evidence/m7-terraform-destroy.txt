@@ -1,0 +1,660 @@
+$ terraform destroy -auto-approve
+
+Warning: Deprecated flag: -state
+
+Use the "path" attribute within the "local" backend to specify a file for
+state storage
+data.aws_iam_policy_document.node_assume: Reading...
+data.aws_availability_zones.available: Reading...
+data.aws_iam_policy_document.eks_assume: Reading...
+data.aws_iam_policy_document.eks_assume: Read complete after 0s [id=1029077455]
+data.aws_iam_policy_document.node_assume: Read complete after 0s [id=2851119427]
+aws_vpc.main: Refreshing state... [id=vpc-8c0c5ee7430d222a2]
+aws_eip.nat[0]: Refreshing state... [id=eipalloc-040fb89a30442f4c8]
+aws_iam_role.cluster: Refreshing state... [id=shelflend-eks-cluster]
+aws_iam_role.node: Refreshing state... [id=shelflend-eks-node]
+data.aws_availability_zones.available: Read complete after 0s [id=ap-south-1]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]: Refreshing state... [id=shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]: Refreshing state... [id=shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]: Refreshing state... [id=shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly]
+aws_iam_role_policy_attachment.cluster: Refreshing state... [id=shelflend-eks-cluster/arn:aws:iam::aws:policy/AmazonEKSClusterPolicy]
+aws_internet_gateway.main: Refreshing state... [id=igw-5ca9c7136f286bc7a]
+aws_subnet.public[1]: Refreshing state... [id=subnet-89150ad4edcf0ee22]
+aws_subnet.private[1]: Refreshing state... [id=subnet-04254c037f5069101]
+aws_subnet.private[0]: Refreshing state... [id=subnet-e504060f88977f180]
+aws_subnet.public[0]: Refreshing state... [id=subnet-2815beca164f4ce46]
+aws_route_table.public: Refreshing state... [id=rtb-f546f9c825284173e]
+aws_nat_gateway.main[0]: Refreshing state... [id=nat-a3f40d93631a7c8ff]
+aws_eks_cluster.main: Refreshing state... [id=shelflend]
+aws_route_table_association.public[0]: Refreshing state... [id=rtbassoc-4a37a28ef626e1760]
+aws_route_table_association.public[1]: Refreshing state... [id=rtbassoc-dfa0308938b10dc71]
+aws_route_table.private: Refreshing state... [id=rtb-2d4fd62bbce676e87]
+aws_route_table_association.private[1]: Refreshing state... [id=rtbassoc-5515543614f68f7cb]
+aws_route_table_association.private[0]: Refreshing state... [id=rtbassoc-567394039ebcceddb]
+aws_eks_node_group.main: Refreshing state... [id=shelflend:shelflend-default]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_eip.nat[0] will be destroyed
+  - resource "aws_eip" "nat" {
+      - allocation_id            = "eipalloc-040fb89a30442f4c8" -> null
+      - arn                      = "arn:aws:ec2:ap-south-1::elastic-ip/eipalloc-040fb89a30442f4c8" -> null
+      - association_id           = "eipassoc-dde0d9553aaaf7525" -> null
+      - domain                   = "vpc" -> null
+      - id                       = "eipalloc-040fb89a30442f4c8" -> null
+      - network_interface        = "eni-5b82c18df32cd6105" -> null
+      - private_dns              = "ip-10-40-11-150.ap-south-1.compute.internal" -> null
+      - private_ip               = "10.40.11.150" -> null
+      - public_dns               = "ec2-127-85-217-127.ap-south-1.compute.amazonaws.com" -> null
+      - public_ip                = "127.85.217.127" -> null
+      - region                   = "ap-south-1" -> null
+      - tags                     = {
+          - "Name" = "shelflend-nat-eip"
+        } -> null
+      - tags_all                 = {
+          - "ManagedBy" = "terraform"
+          - "Name"      = "shelflend-nat-eip"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+        # (8 unchanged attributes hidden)
+    }
+
+  # aws_eks_cluster.main will be destroyed
+  - resource "aws_eks_cluster" "main" {
+      - arn                           = "arn:aws:eks:ap-south-1:123456789012:cluster/shelflend" -> null
+      - bootstrap_self_managed_addons = true -> null
+      - certificate_authority         = [
+          - {
+              - data = "B9arcPg0WuEyBvwpJNomFDcczRjYIbJYitTvYTd8RRtdFggvE7fAixudFGf5GUMKfy5h4i7ZTmARx6F6ho3xCKacMU18n2VDLNx89gHw3ivber82yUPKpuBkYeyf0hUBjnRc37hsEjIFv2X19FVaNwrTEAMVyYCc3mKjrynJzD7rdkgQXpCQOC5L2KzlH1fo7DVo3ZoGl3q51AViyjiV2wuPbaDHGXQgLpCIMba7BAYaBGiaF1mBIvvX343MKQQanZVDYoXmuDnkstDioJP6VUS9s2L4po9AXoY9o1zupnEgTn08GTgzkpmQGhHgXUe2VECewuAQT68Vvpue8bgwJLR0bp2I3w0Wv9B7myPizkbFTEqAfo8JtRelgfx0yDQaQMrqI9ltN2lsjB6cg72Qw9cQTN3OJA76gAmAbj4C94P6tI0r0hYOXA5RPHR2ogp3fqvRqn7BKPmEgVnfC3PTNQZeqYKPQUgWWeRlQaxJkrqIkbTXfOjeE1yGyAUcUtIOC3N30LZ60yKkjzz5nLUKC1ez0S4T55QgMP2j0vKwXP2qxD4Sq8DQXa9X3hlYwU93ZzKZpBK7dd1rqFgAptjnfwb5DI7OskH1ZmDjcCG6n7uG1MdBkEE62yhAtcMtakCcZN7RK1gL6EHGckWh5UC5E3JOEPzfDIcNdQEHpVSisVZU1cISunFglRTRvV5kRO26cc745XDBHWVv5Tuqwh3MTs8xdTJ6jD1du5yrKHvQ4afFMXD8DVeqO6Sw4IsSCT82xx1PMXhJG4PtPgtgVX6qPaslxKB2O8eKfBiHjitwaZOspzzo7ArkDN72F7UDnl2hFeINPzU5ISGpIjWF7232aRhpIRIwhK2rM227U3VW8xBSFjYIqxoX243Zzq2mRsiMtqAy04zjxsZhY3Clu4kzShf30mPGrlviW5oNYNRi1mup3MSVkWqSQFTohCimUxoW5jlDLKsKq2KpxZVKgTeNxzLLcZ3MNPZYahv0vhPxFJh6JdrNFSbHiredzGPFuZaGctgZDRta3OHWEoyxRIVaVDJ1pX7UEvCkZZ10QGn39BS1wYR6N8nsVF3YqULrd4JGhyFTUVGxHuKB8QeSfzc8yjZ3zBWPWlZPUrD6gUG9aQAuyCecSPVRUHYB4EW9NVL4hAi1N0ywigIOWyrshClgEA2NjrSoge1XuNU7SyD6QHosy8ykoHVrxQZnfWTxb3KBRP748HDYBOxYxydf3IlHNTfTqUwB2UYOauTejst3PZJOom0K9je2q8jOZiG3CS6YMgz1KYE060qwIl1X5zc31zDd1LoJCJczP5ZXouGJDT3P6QPnJljNzxRMnba5cMTdQjflSyGYUpXzrLCa67cohAuL93VHQo1WpdcBTERDyvqu55itAi8R18AC"
+            },
+        ] -> null
+      - created_at                    = "2026-10-18T14:02:46Z" -> null
+      - deletion_protection           = false -> null
+      - enabled_cluster_log_types     = [] -> null
+      - endpoint                      = "https://d0xMjwIFkLa4jYumKJps.sbV.ap-south-1.eks.amazonaws.com/" -> null
+      - id                            = "shelflend" -> null
+      - identity                      = [
+          - {
+              - oidc = [
+                  - {
+                      - issuer = "https://oidc.eks.ap-south-1.amazonaws.com/id/rn22BcKVwe"
+                    },
+                ]
+            },
+        ] -> null
+      - name                          = "shelflend" -> null
+      - platform_version              = "eks.4" -> null
+      - region                        = "ap-south-1" -> null
+      - role_arn                      = "arn:aws:iam::123456789012:role/shelflend-eks-cluster" -> null
+      - status                        = "ACTIVE" -> null
+      - tags                          = {} -> null
+      - tags_all                      = {
+          - "ManagedBy" = "terraform"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - version                       = "1.34" -> null
+
+      - access_config {
+          - authentication_mode                         = "API" -> null
+          - bootstrap_cluster_creator_admin_permissions = true -> null
+        }
+
+      - kubernetes_network_config {
+            # (3 unchanged attributes hidden)
+
+          - elastic_load_balancing {
+              - enabled = false -> null
+            }
+        }
+
+      - vpc_config {
+          - endpoint_private_access   = true -> null
+          - endpoint_public_access    = true -> null
+          - public_access_cidrs       = [
+              - "0.0.0.0/0",
+            ] -> null
+          - security_group_ids        = [] -> null
+          - subnet_ids                = [
+              - "subnet-04254c037f5069101",
+              - "subnet-2815beca164f4ce46",
+              - "subnet-89150ad4edcf0ee22",
+              - "subnet-e504060f88977f180",
+            ] -> null
+            # (3 unchanged attributes hidden)
+        }
+    }
+
+  # aws_eks_node_group.main will be destroyed
+  - resource "aws_eks_node_group" "main" {
+      - ami_type               = "AL2_x86_64" -> null
+      - arn                    = "arn:aws:eks:ap-south-1:123456789012:nodegroup/shelflend/shelflend-default/c6d9fca4-a35d-436a-a7c8-5aa2d87299b7" -> null
+      - capacity_type          = "ON_DEMAND" -> null
+      - cluster_name           = "shelflend" -> null
+      - disk_size              = 20 -> null
+      - id                     = "shelflend:shelflend-default" -> null
+      - instance_types         = [
+          - "t3.medium",
+        ] -> null
+      - labels                 = {
+          - "workload" = "shelflend"
+        } -> null
+      - node_group_name        = "shelflend-default" -> null
+      - node_role_arn          = "arn:aws:iam::123456789012:role/shelflend-eks-node" -> null
+      - region                 = "ap-south-1" -> null
+      - release_version        = "1.19.8-20210414" -> null
+      - resources              = [
+          - {
+              - autoscaling_groups              = [
+                  - {
+                      - name = "eks-c6d9fca4-a35d-436a-a7c8-5aa2d87299b7"
+                    },
+                ]
+              - remote_access_security_group_id = "sg-ymldbi3dvrmr0rciu"
+            },
+        ] -> null
+      - status                 = "ACTIVE" -> null
+      - subnet_ids             = [
+          - "subnet-04254c037f5069101",
+          - "subnet-e504060f88977f180",
+        ] -> null
+      - tags                   = {} -> null
+      - tags_all               = {
+          - "ManagedBy" = "terraform"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - version                = "1.19" -> null
+        # (1 unchanged attribute hidden)
+
+      - remote_access {
+          - ec2_ssh_key               = "eksKeypair" -> null
+          - source_security_group_ids = [] -> null
+        }
+
+      - scaling_config {
+          - desired_size = 2 -> null
+          - max_size     = 3 -> null
+          - min_size     = 1 -> null
+        }
+    }
+
+  # aws_iam_role.cluster will be destroyed
+  - resource "aws_iam_role" "cluster" {
+      - arn                   = "arn:aws:iam::123456789012:role/shelflend-eks-cluster" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = [
+                          - "sts:TagSession",
+                          - "sts:AssumeRole",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "eks.amazonaws.com"
+                        }
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-10-18T14:02:35Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "shelflend-eks-cluster" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "shelflend-eks-cluster" -> null
+      - path                  = "/" -> null
+      - tags                  = {} -> null
+      - tags_all              = {
+          - "ManagedBy" = "terraform"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - unique_id             = "AROARZPUZDIKHPOGJXBVO" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # aws_iam_role.node will be destroyed
+  - resource "aws_iam_role" "node" {
+      - arn                   = "arn:aws:iam::123456789012:role/shelflend-eks-node" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-10-18T14:02:35Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "shelflend-eks-node" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+          - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+          - "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "shelflend-eks-node" -> null
+      - path                  = "/" -> null
+      - tags                  = {} -> null
+      - tags_all              = {
+          - "ManagedBy" = "terraform"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - unique_id             = "AROARZPUZDIKNT2C5HNGH" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # aws_iam_role_policy_attachment.cluster will be destroyed
+  - resource "aws_iam_role_policy_attachment" "cluster" {
+      - id         = "shelflend-eks-cluster/arn:aws:iam::aws:policy/AmazonEKSClusterPolicy" -> null
+      - policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy" -> null
+      - role       = "shelflend-eks-cluster" -> null
+    }
+
+  # aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"] will be destroyed
+  - resource "aws_iam_role_policy_attachment" "node" {
+      - id         = "shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" -> null
+      - policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" -> null
+      - role       = "shelflend-eks-node" -> null
+    }
+
+  # aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"] will be destroyed
+  - resource "aws_iam_role_policy_attachment" "node" {
+      - id         = "shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy" -> null
+      - policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy" -> null
+      - role       = "shelflend-eks-node" -> null
+    }
+
+  # aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"] will be destroyed
+  - resource "aws_iam_role_policy_attachment" "node" {
+      - id         = "shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy" -> null
+      - policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy" -> null
+      - role       = "shelflend-eks-node" -> null
+    }
+
+  # aws_internet_gateway.main will be destroyed
+  - resource "aws_internet_gateway" "main" {
+      - arn      = "arn:aws:ec2:ap-south-1:123456789012:internet-gateway/igw-5ca9c7136f286bc7a" -> null
+      - id       = "igw-5ca9c7136f286bc7a" -> null
+      - owner_id = "123456789012" -> null
+      - region   = "ap-south-1" -> null
+      - tags     = {
+          - "Name" = "shelflend-igw"
+        } -> null
+      - tags_all = {
+          - "ManagedBy" = "terraform"
+          - "Name"      = "shelflend-igw"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - vpc_id   = "vpc-8c0c5ee7430d222a2" -> null
+    }
+
+  # aws_nat_gateway.main[0] will be destroyed
+  - resource "aws_nat_gateway" "main" {
+      - allocation_id                  = "eipalloc-040fb89a30442f4c8" -> null
+      - connectivity_type              = "public" -> null
+      - id                             = "nat-a3f40d93631a7c8ff" -> null
+      - region                         = "ap-south-1" -> null
+      - regional_nat_gateway_address   = [] -> null
+      - secondary_allocation_ids       = [] -> null
+      - secondary_private_ip_addresses = [] -> null
+      - subnet_id                      = "subnet-2815beca164f4ce46" -> null
+      - tags                           = {
+          - "Name" = "shelflend-nat"
+        } -> null
+      - tags_all                       = {
+          - "ManagedBy" = "terraform"
+          - "Name"      = "shelflend-nat"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - vpc_id                         = "vpc-8c0c5ee7430d222a2" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_route_table.private will be destroyed
+  - resource "aws_route_table" "private" {
+      - arn              = "arn:aws:ec2:ap-south-1:123456789012:route-table/rtb-2d4fd62bbce676e87" -> null
+      - id               = "rtb-2d4fd62bbce676e87" -> null
+      - owner_id         = "123456789012" -> null
+      - propagating_vgws = [] -> null
+      - region           = "ap-south-1" -> null
+      - route            = [
+          - {
+              - cidr_block                 = "0.0.0.0/0"
+              - nat_gateway_id             = "nat-a3f40d93631a7c8ff"
+                # (12 unchanged attributes hidden)
+            },
+        ] -> null
+      - tags             = {
+          - "Name" = "shelflend-private-rt"
+        } -> null
+      - tags_all         = {
+          - "ManagedBy" = "terraform"
+          - "Name"      = "shelflend-private-rt"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - vpc_id           = "vpc-8c0c5ee7430d222a2" -> null
+    }
+
+  # aws_route_table.public will be destroyed
+  - resource "aws_route_table" "public" {
+      - arn              = "arn:aws:ec2:ap-south-1:123456789012:route-table/rtb-f546f9c825284173e" -> null
+      - id               = "rtb-f546f9c825284173e" -> null
+      - owner_id         = "123456789012" -> null
+      - propagating_vgws = [] -> null
+      - region           = "ap-south-1" -> null
+      - route            = [
+          - {
+              - cidr_block                 = "0.0.0.0/0"
+              - gateway_id                 = "igw-5ca9c7136f286bc7a"
+                # (12 unchanged attributes hidden)
+            },
+        ] -> null
+      - tags             = {
+          - "Name" = "shelflend-public-rt"
+        } -> null
+      - tags_all         = {
+          - "ManagedBy" = "terraform"
+          - "Name"      = "shelflend-public-rt"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+      - vpc_id           = "vpc-8c0c5ee7430d222a2" -> null
+    }
+
+  # aws_route_table_association.private[0] will be destroyed
+  - resource "aws_route_table_association" "private" {
+      - id             = "rtbassoc-567394039ebcceddb" -> null
+      - region         = "ap-south-1" -> null
+      - route_table_id = "rtb-2d4fd62bbce676e87" -> null
+      - subnet_id      = "subnet-e504060f88977f180" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_route_table_association.private[1] will be destroyed
+  - resource "aws_route_table_association" "private" {
+      - id             = "rtbassoc-5515543614f68f7cb" -> null
+      - region         = "ap-south-1" -> null
+      - route_table_id = "rtb-2d4fd62bbce676e87" -> null
+      - subnet_id      = "subnet-04254c037f5069101" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_route_table_association.public[0] will be destroyed
+  - resource "aws_route_table_association" "public" {
+      - id             = "rtbassoc-4a37a28ef626e1760" -> null
+      - region         = "ap-south-1" -> null
+      - route_table_id = "rtb-f546f9c825284173e" -> null
+      - subnet_id      = "subnet-2815beca164f4ce46" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_route_table_association.public[1] will be destroyed
+  - resource "aws_route_table_association" "public" {
+      - id             = "rtbassoc-dfa0308938b10dc71" -> null
+      - region         = "ap-south-1" -> null
+      - route_table_id = "rtb-f546f9c825284173e" -> null
+      - subnet_id      = "subnet-89150ad4edcf0ee22" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_subnet.private[0] will be destroyed
+  - resource "aws_subnet" "private" {
+      - arn                                            = "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-e504060f88977f180" -> null
+      - assign_ipv6_address_on_creation                = false -> null
+      - availability_zone                              = "ap-south-1a" -> null
+      - availability_zone_id                           = "aps1-az1" -> null
+      - cidr_block                                     = "10.40.10.0/24" -> null
+      - enable_dns64                                   = false -> null
+      - enable_lni_at_device_index                     = 0 -> null
+      - enable_resource_name_dns_a_record_on_launch    = false -> null
+      - enable_resource_name_dns_aaaa_record_on_launch = false -> null
+      - id                                             = "subnet-e504060f88977f180" -> null
+      - ipv6_native                                    = false -> null
+      - map_customer_owned_ip_on_launch                = false -> null
+      - map_public_ip_on_launch                        = false -> null
+      - owner_id                                       = "123456789012" -> null
+      - region                                         = "ap-south-1" -> null
+      - tags                                           = {
+          - "Name"                            = "shelflend-private-ap-south-1a"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/internal-elb" = "1"
+        } -> null
+      - tags_all                                       = {
+          - "ManagedBy"                       = "terraform"
+          - "Name"                            = "shelflend-private-ap-south-1a"
+          - "Owner"                           = "parth-agarwal"
+          - "Project"                         = "shelflend"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/internal-elb" = "1"
+        } -> null
+      - vpc_id                                         = "vpc-8c0c5ee7430d222a2" -> null
+        # (5 unchanged attributes hidden)
+    }
+
+  # aws_subnet.private[1] will be destroyed
+  - resource "aws_subnet" "private" {
+      - arn                                            = "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-04254c037f5069101" -> null
+      - assign_ipv6_address_on_creation                = false -> null
+      - availability_zone                              = "ap-south-1b" -> null
+      - availability_zone_id                           = "aps1-az3" -> null
+      - cidr_block                                     = "10.40.11.0/24" -> null
+      - enable_dns64                                   = false -> null
+      - enable_lni_at_device_index                     = 0 -> null
+      - enable_resource_name_dns_a_record_on_launch    = false -> null
+      - enable_resource_name_dns_aaaa_record_on_launch = false -> null
+      - id                                             = "subnet-04254c037f5069101" -> null
+      - ipv6_native                                    = false -> null
+      - map_customer_owned_ip_on_launch                = false -> null
+      - map_public_ip_on_launch                        = false -> null
+      - owner_id                                       = "123456789012" -> null
+      - region                                         = "ap-south-1" -> null
+      - tags                                           = {
+          - "Name"                            = "shelflend-private-ap-south-1b"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/internal-elb" = "1"
+        } -> null
+      - tags_all                                       = {
+          - "ManagedBy"                       = "terraform"
+          - "Name"                            = "shelflend-private-ap-south-1b"
+          - "Owner"                           = "parth-agarwal"
+          - "Project"                         = "shelflend"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/internal-elb" = "1"
+        } -> null
+      - vpc_id                                         = "vpc-8c0c5ee7430d222a2" -> null
+        # (5 unchanged attributes hidden)
+    }
+
+  # aws_subnet.public[0] will be destroyed
+  - resource "aws_subnet" "public" {
+      - arn                                            = "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-2815beca164f4ce46" -> null
+      - assign_ipv6_address_on_creation                = false -> null
+      - availability_zone                              = "ap-south-1a" -> null
+      - availability_zone_id                           = "aps1-az1" -> null
+      - cidr_block                                     = "10.40.0.0/24" -> null
+      - enable_dns64                                   = false -> null
+      - enable_lni_at_device_index                     = 0 -> null
+      - enable_resource_name_dns_a_record_on_launch    = false -> null
+      - enable_resource_name_dns_aaaa_record_on_launch = false -> null
+      - id                                             = "subnet-2815beca164f4ce46" -> null
+      - ipv6_native                                    = false -> null
+      - map_customer_owned_ip_on_launch                = false -> null
+      - map_public_ip_on_launch                        = true -> null
+      - owner_id                                       = "123456789012" -> null
+      - region                                         = "ap-south-1" -> null
+      - tags                                           = {
+          - "Name"                            = "shelflend-public-ap-south-1a"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/elb"          = "1"
+        } -> null
+      - tags_all                                       = {
+          - "ManagedBy"                       = "terraform"
+          - "Name"                            = "shelflend-public-ap-south-1a"
+          - "Owner"                           = "parth-agarwal"
+          - "Project"                         = "shelflend"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/elb"          = "1"
+        } -> null
+      - vpc_id                                         = "vpc-8c0c5ee7430d222a2" -> null
+        # (5 unchanged attributes hidden)
+    }
+
+  # aws_subnet.public[1] will be destroyed
+  - resource "aws_subnet" "public" {
+      - arn                                            = "arn:aws:ec2:ap-south-1:123456789012:subnet/subnet-89150ad4edcf0ee22" -> null
+      - assign_ipv6_address_on_creation                = false -> null
+      - availability_zone                              = "ap-south-1b" -> null
+      - availability_zone_id                           = "aps1-az3" -> null
+      - cidr_block                                     = "10.40.1.0/24" -> null
+      - enable_dns64                                   = false -> null
+      - enable_lni_at_device_index                     = 0 -> null
+      - enable_resource_name_dns_a_record_on_launch    = false -> null
+      - enable_resource_name_dns_aaaa_record_on_launch = false -> null
+      - id                                             = "subnet-89150ad4edcf0ee22" -> null
+      - ipv6_native                                    = false -> null
+      - map_customer_owned_ip_on_launch                = false -> null
+      - map_public_ip_on_launch                        = true -> null
+      - owner_id                                       = "123456789012" -> null
+      - region                                         = "ap-south-1" -> null
+      - tags                                           = {
+          - "Name"                            = "shelflend-public-ap-south-1b"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/elb"          = "1"
+        } -> null
+      - tags_all                                       = {
+          - "ManagedBy"                       = "terraform"
+          - "Name"                            = "shelflend-public-ap-south-1b"
+          - "Owner"                           = "parth-agarwal"
+          - "Project"                         = "shelflend"
+          - "kubernetes.io/cluster/shelflend" = "shared"
+          - "kubernetes.io/role/elb"          = "1"
+        } -> null
+      - vpc_id                                         = "vpc-8c0c5ee7430d222a2" -> null
+        # (5 unchanged attributes hidden)
+    }
+
+  # aws_vpc.main will be destroyed
+  - resource "aws_vpc" "main" {
+      - arn                                  = "arn:aws:ec2:ap-south-1:123456789012:vpc/vpc-8c0c5ee7430d222a2" -> null
+      - assign_generated_ipv6_cidr_block     = false -> null
+      - cidr_block                           = "10.40.0.0/16" -> null
+      - default_network_acl_id               = "acl-c3358d6b99a38df2e" -> null
+      - default_route_table_id               = "rtb-46aa13020d71585e0" -> null
+      - default_security_group_id            = "sg-f12dd2cb6bc787dd2" -> null
+      - dhcp_options_id                      = "default" -> null
+      - enable_dns_hostnames                 = true -> null
+      - enable_dns_support                   = true -> null
+      - enable_network_address_usage_metrics = false -> null
+      - id                                   = "vpc-8c0c5ee7430d222a2" -> null
+      - instance_tenancy                     = "default" -> null
+      - ipv6_netmask_length                  = 0 -> null
+      - main_route_table_id                  = "rtb-46aa13020d71585e0" -> null
+      - owner_id                             = "123456789012" -> null
+      - region                               = "ap-south-1" -> null
+      - tags                                 = {
+          - "Name" = "shelflend-vpc"
+        } -> null
+      - tags_all                             = {
+          - "ManagedBy" = "terraform"
+          - "Name"      = "shelflend-vpc"
+          - "Owner"     = "parth-agarwal"
+          - "Project"   = "shelflend"
+        } -> null
+        # (4 unchanged attributes hidden)
+    }
+
+Plan: 0 to add, 0 to change, 22 to destroy.
+
+Changes to Outputs:
+  - cluster_endpoint   = "https://d0xMjwIFkLa4jYumKJps.sbV.ap-south-1.eks.amazonaws.com/" -> null
+  - cluster_name       = "shelflend" -> null
+  - kubeconfig_command = "aws eks update-kubeconfig --region ap-south-1 --name shelflend" -> null
+  - node_group_status  = "ACTIVE" -> null
+  - private_subnet_ids = [
+      - "subnet-e504060f88977f180",
+      - "subnet-04254c037f5069101",
+    ] -> null
+  - public_subnet_ids  = [
+      - "subnet-2815beca164f4ce46",
+      - "subnet-89150ad4edcf0ee22",
+    ] -> null
+  - vpc_id             = "vpc-8c0c5ee7430d222a2" -> null
+aws_route_table_association.public[0]: Destroying... [id=rtbassoc-4a37a28ef626e1760]
+aws_route_table_association.public[1]: Destroying... [id=rtbassoc-dfa0308938b10dc71]
+aws_eks_node_group.main: Destroying... [id=shelflend:shelflend-default]
+aws_eks_node_group.main: Destruction complete after 0s
+aws_route_table_association.public[0]: Destruction complete after 0s
+aws_route_table_association.public[1]: Destruction complete after 0s
+aws_route_table_association.private[1]: Destroying... [id=rtbassoc-5515543614f68f7cb]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]: Destroying... [id=shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy]
+aws_route_table_association.private[0]: Destroying... [id=rtbassoc-567394039ebcceddb]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]: Destroying... [id=shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]: Destroying... [id=shelflend-eks-node/arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly]
+aws_eks_cluster.main: Destroying... [id=shelflend]
+aws_route_table.public: Destroying... [id=rtb-f546f9c825284173e]
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"]: Destruction complete after 0s
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]: Destruction complete after 0s
+aws_iam_role_policy_attachment.node["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"]: Destruction complete after 0s
+aws_route_table_association.private[1]: Destruction complete after 0s
+aws_route_table_association.private[0]: Destruction complete after 0s
+aws_iam_role.node: Destroying... [id=shelflend-eks-node]
+aws_iam_role.node: Destruction complete after 0s
+aws_route_table.private: Destroying... [id=rtb-2d4fd62bbce676e87]
+aws_route_table.public: Destruction complete after 0s
+aws_route_table.private: Destruction complete after 0s
+aws_nat_gateway.main[0]: Destroying... [id=nat-a3f40d93631a7c8ff]
+aws_eks_cluster.main: Still destroying... [id=shelflend, 00m10s elapsed]
+aws_nat_gateway.main[0]: Still destroying... [id=nat-a3f40d93631a7c8ff, 00m10s elapsed]
+aws_eks_cluster.main: Still destroying... [id=shelflend, 00m20s elapsed]
+aws_nat_gateway.main[0]: Still destroying... [id=nat-a3f40d93631a7c8ff, 00m20s elapsed]
+aws_nat_gateway.main[0]: Destruction complete after 20s
+aws_eip.nat[0]: Destroying... [id=eipalloc-040fb89a30442f4c8]
+aws_internet_gateway.main: Destroying... [id=igw-5ca9c7136f286bc7a]
+aws_eip.nat[0]: Destruction complete after 0s
+aws_internet_gateway.main: Destruction complete after 0s
+aws_eks_cluster.main: Still destroying... [id=shelflend, 00m30s elapsed]
+aws_eks_cluster.main: Still destroying... [id=shelflend, 00m40s elapsed]
+aws_eks_cluster.main: Destruction complete after 44s
+aws_iam_role_policy_attachment.cluster: Destroying... [id=shelflend-eks-cluster/arn:aws:iam::aws:policy/AmazonEKSClusterPolicy]
+aws_subnet.public[0]: Destroying... [id=subnet-2815beca164f4ce46]
+aws_subnet.private[1]: Destroying... [id=subnet-04254c037f5069101]
+aws_subnet.public[1]: Destroying... [id=subnet-89150ad4edcf0ee22]
+aws_subnet.private[0]: Destroying... [id=subnet-e504060f88977f180]
+aws_iam_role_policy_attachment.cluster: Destruction complete after 0s
+aws_iam_role.cluster: Destroying... [id=shelflend-eks-cluster]
+aws_subnet.public[1]: Destruction complete after 0s
+aws_subnet.private[1]: Destruction complete after 0s
+aws_subnet.public[0]: Destruction complete after 0s
+aws_subnet.private[0]: Destruction complete after 0s
+aws_iam_role.cluster: Destruction complete after 0s
+aws_vpc.main: Destroying... [id=vpc-8c0c5ee7430d222a2]
+aws_vpc.main: Destruction complete after 0s
+
+Destroy complete! Resources: 22 destroyed.
+$ aws ec2 describe-vpcs --filters Name=tag:Project,Values=shelflend --query "Vpcs[].VpcId"
+[]
+$ aws eks list-clusters
+{
+    "clusters": []
+}

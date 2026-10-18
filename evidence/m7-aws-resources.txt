@@ -1,0 +1,45 @@
+$ export AWS_ENDPOINT_URL=http://127.0.0.1:5050 AWS_DEFAULT_REGION=ap-south-1   # moto emulator, not a real AWS account
+$ aws ec2 describe-vpcs --filters Name=tag:Project,Values=shelflend --output table --query 'Vpcs[].{Name:Tags[?Key==`Name`]|[0].Value,VpcId:VpcId,Cidr:CidrBlock,State:State}'
+-------------------------------------------------------------------------
+|                             DescribeVpcs                              |
++--------------+----------------+------------+--------------------------+
+|     Cidr     |     Name       |   State    |          VpcId           |
++--------------+----------------+------------+--------------------------+
+|  10.40.0.0/16|  shelflend-vpc |  available |  vpc-8c0c5ee7430d222a2   |
++--------------+----------------+------------+--------------------------+
+$ aws ec2 describe-subnets --filters Name=tag:Project,Values=shelflend --output table --query 'sort_by(Subnets,&CidrBlock)[].{Name:Tags[?Key==`Name`]|[0].Value,AZ:AvailabilityZone,Cidr:CidrBlock,PublicIP:MapPublicIpOnLaunch}'
+-------------------------------------------------------------------------------
+|                               DescribeSubnets                               |
++-------------+----------------+---------------------------------+------------+
+|     AZ      |     Cidr       |              Name               | PublicIP   |
++-------------+----------------+---------------------------------+------------+
+|  ap-south-1a|  10.40.0.0/24  |  shelflend-public-ap-south-1a   |  True      |
+|  ap-south-1b|  10.40.1.0/24  |  shelflend-public-ap-south-1b   |  True      |
+|  ap-south-1a|  10.40.10.0/24 |  shelflend-private-ap-south-1a  |  False     |
+|  ap-south-1b|  10.40.11.0/24 |  shelflend-private-ap-south-1b  |  False     |
++-------------+----------------+---------------------------------+------------+
+$ aws ec2 describe-nat-gateways --filter Name=tag:Project,Values=shelflend --output table --query 'NatGateways[].{Id:NatGatewayId,State:State,Subnet:SubnetId}'
+--------------------------------------------------------------------
+|                        DescribeNatGateways                       |
++------------------------+------------+----------------------------+
+|           Id           |   State    |          Subnet            |
++------------------------+------------+----------------------------+
+|  nat-a3f40d93631a7c8ff |  available |  subnet-2815beca164f4ce46  |
++------------------------+------------+----------------------------+
+$ aws eks describe-cluster --name shelflend --output table --query 'cluster.{Name:name,Status:status,Version:version,Endpoint:endpoint}'
+--------------------------------------------------------------------------------
+|                                DescribeCluster                               |
++----------+-------------------------------------------------------------------+
+|  Endpoint|  https://d0xMjwIFkLa4jYumKJps.sbV.ap-south-1.eks.amazonaws.com/   |
+|  Name    |  shelflend                                                        |
+|  Status  |  ACTIVE                                                           |
+|  Version |  1.34                                                             |
++----------+-------------------------------------------------------------------+
+$ aws eks describe-nodegroup --cluster-name shelflend --nodegroup-name shelflend-default --output table --query 'nodegroup.{Name:nodegroupName,Status:status,Instance:instanceTypes[0],Desired:scalingConfig.desiredSize,Min:scalingConfig.minSize,Max:scalingConfig.maxSize}'
+-----------------------------------------------------------------------
+|                          DescribeNodegroup                          |
++---------+------------+------+------+---------------------+----------+
+| Desired | Instance   | Max  | Min  |        Name         | Status   |
++---------+------------+------+------+---------------------+----------+
+|  2      |  t3.medium |  3   |  1   |  shelflend-default  |  ACTIVE  |
++---------+------------+------+------+---------------------+----------+

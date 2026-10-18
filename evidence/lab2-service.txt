@@ -1,0 +1,29 @@
+$ kubectl apply -f troubleshooting/02-broken-service.yaml
+deployment.apps/lab-broken-service created
+service/lab-svc created
+$ kubectl -n shelflend-labs rollout status deploy/lab-broken-service --timeout=120s
+Waiting for deployment "lab-broken-service" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "lab-broken-service" rollout to finish: 1 of 2 updated replicas are available...
+deployment "lab-broken-service" successfully rolled out
+$ kubectl -n shelflend-labs get pods -l lab=broken-service
+NAME                                  READY   STATUS    RESTARTS   AGE
+lab-broken-service-69c457cfbd-2zdxc   1/1     Running   0          1s
+lab-broken-service-69c457cfbd-sxrc9   1/1     Running   0          1s
+$ kubectl -n shelflend-labs get endpointslices -l kubernetes.io/service-name=lab-svc
+NAME            ADDRESSTYPE   PORTS     ENDPOINTS   AGE
+lab-svc-bvx72   IPv4          <unset>   <unset>     1s
+$ kubectl -n shelflend-labs get svc lab-svc -o jsonpath='{.spec.selector}{"\n"}'
+{"lab":"broken-servcie"}
+$ kubectl -n shelflend-labs get pods --show-labels -l lab=broken-service
+NAME                                  READY   STATUS    RESTARTS   AGE   LABELS
+lab-broken-service-69c457cfbd-2zdxc   1/1     Running   0          1s    lab=broken-service,pod-template-hash=69c457cfbd
+lab-broken-service-69c457cfbd-sxrc9   1/1     Running   0          1s    lab=broken-service,pod-template-hash=69c457cfbd
+$ kubectl -n shelflend-labs patch svc lab-svc -p '{"spec":{"selector":{"lab":"broken-service"}}}'
+service/lab-svc patched
+$ kubectl -n shelflend-labs get endpointslices -l kubernetes.io/service-name=lab-svc
+NAME            ADDRESSTYPE   PORTS   ENDPOINTS                 AGE
+lab-svc-bvx72   IPv4          8080    10.244.1.41,10.244.1.42   4s
+$ kubectl -n shelflend-labs run curl --rm -i --restart=Never --image=curlimages/curl:8.17.0 --overrides='{"spec":{"securityContext":{"runAsNonRoot":true,"runAsUser":100,"seccompProfile":{"type":"RuntimeDefault"}},"containers":[{"name":"curl","image":"curlimages/curl:8.17.0","args":["-s","-o","/dev/null","-w","HTTP %{http_code}\\n","http://lab-svc"],"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}}]}}' -q
+HTTP 200
+warning: couldn't attach to pod/curl, falling back to streaming logs: unable to upgrade connection: container curl not found in pod curl_shelflend-labs
+HTTP 200

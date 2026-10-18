@@ -1,0 +1,18 @@
+$ kubectl apply -f troubleshooting/03-broken-probe.yaml
+deployment.apps/lab-broken-probe created
+$ kubectl -n shelflend-labs get pods -l lab=broken-probe
+NAME                                READY   STATUS    RESTARTS   AGE
+lab-broken-probe-5fb4d86748-dlrnd   0/1     Running   0          20s
+$ kubectl -n shelflend-labs describe pod -l lab=broken-probe | grep -E 'Readiness probe failed' | head -2
+  Warning  Unhealthy  1s (x8 over 20s)  kubelet            spec.containers{web}: Readiness probe failed: Get "http://10.244.1.44:80/": dial tcp 10.244.1.44:80: connect: connection refused
+$ kubectl -n shelflend-labs patch deploy lab-broken-probe --type=json -p '[{"op":"replace","path":"/spec/template/spec/containers/0/readinessProbe/httpGet/port","value":8080}]'
+deployment.apps/lab-broken-probe patched
+$ kubectl -n shelflend-labs rollout status deploy/lab-broken-probe --timeout=120s
+Waiting for deployment "lab-broken-probe" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "lab-broken-probe" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "lab-broken-probe" rollout to finish: 1 old replicas are pending termination...
+deployment "lab-broken-probe" successfully rolled out
+$ kubectl -n shelflend-labs get pods -l lab=broken-probe
+NAME                                READY   STATUS        RESTARTS   AGE
+lab-broken-probe-59cd67dd9b-cm7wc   1/1     Running       0          1s
+lab-broken-probe-5fb4d86748-dlrnd   0/1     Terminating   0          21s
