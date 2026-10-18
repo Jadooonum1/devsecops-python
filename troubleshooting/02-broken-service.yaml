@@ -1,0 +1,30 @@
+# Lab 2 - symptom: pods are Ready but the Service has no endpoints (curl hangs/refuses).
+# Diagnose: kubectl -n shelflend-labs get endpointslices -l kubernetes.io/service-name=lab-svc   (no addresses)
+#           compare `kubectl get svc lab-svc -o jsonpath='{.spec.selector}'` with the pod labels
+# Fix:      kubectl -n shelflend-labs patch svc lab-svc -p '{"spec":{"selector":{"lab":"broken-service"}}}'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-broken-service
+  namespace: shelflend-labs
+spec:
+  replicas: 2
+  selector: { matchLabels: { lab: broken-service } }
+  template:
+    metadata: { labels: { lab: broken-service } }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 101, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: web
+          image: nginxinc/nginx-unprivileged:1.29-alpine
+          ports: [{ containerPort: 8080 }]
+          securityContext: { allowPrivilegeEscalation: false, capabilities: { drop: ["ALL"] } }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-svc
+  namespace: shelflend-labs
+spec:
+  selector: { lab: broken-servcie }   # typo on purpose
+  ports: [{ port: 80, targetPort: 8080 }]

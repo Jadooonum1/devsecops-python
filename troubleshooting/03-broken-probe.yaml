@@ -1,0 +1,24 @@
+# Lab 3 - symptom: pod Running but READY 0/1, never receives traffic.
+# Diagnose: kubectl -n shelflend-labs describe pod -l lab=broken-probe  (Readiness probe failed: connection refused :80)
+# Fix:      kubectl -n shelflend-labs patch deploy lab-broken-probe --type=json \
+#             -p '[{"op":"replace","path":"/spec/template/spec/containers/0/readinessProbe/httpGet/port","value":8080}]'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-broken-probe
+  namespace: shelflend-labs
+spec:
+  replicas: 1
+  selector: { matchLabels: { lab: broken-probe } }
+  template:
+    metadata: { labels: { lab: broken-probe } }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 101, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: web
+          image: nginxinc/nginx-unprivileged:1.29-alpine
+          ports: [{ containerPort: 8080 }]
+          readinessProbe:
+            httpGet: { path: /, port: 80 }   # nginx-unprivileged listens on 8080
+            periodSeconds: 3
+          securityContext: { allowPrivilegeEscalation: false, capabilities: { drop: ["ALL"] } }

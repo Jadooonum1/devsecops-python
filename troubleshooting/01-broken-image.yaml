@@ -1,0 +1,20 @@
+# Lab 1 - symptom: ImagePullBackOff.
+# Diagnose: kubectl -n shelflend-labs describe pod -l lab=broken-image  (Events: "not found")
+# Fix:      kubectl -n shelflend-labs set image deploy/lab-broken-image web=nginxinc/nginx-unprivileged:1.29-alpine
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-broken-image
+  namespace: shelflend-labs
+spec:
+  replicas: 1
+  selector: { matchLabels: { lab: broken-image } }
+  template:
+    metadata: { labels: { lab: broken-image } }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 101, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: web
+          image: nginxinc/nginx-unprivlieged:1.29-alpine   # typo on purpose
+          ports: [{ containerPort: 8080 }]
+          securityContext: { allowPrivilegeEscalation: false, capabilities: { drop: ["ALL"] } }
