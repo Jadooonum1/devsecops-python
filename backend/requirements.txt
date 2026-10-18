@@ -1,0 +1,8 @@
+fastapi==0.118.0
+uvicorn[standard]==0.37.0
+sqlalchemy==2.0.43
+psycopg[binary]==3.2.10
+alembic==1.16.5
+pydantic[email]==2.11.9
+prometheus-fastapi-instrumentator==7.1.0
+prometheus-client==0.23.1
