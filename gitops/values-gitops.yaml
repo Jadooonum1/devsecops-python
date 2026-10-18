@@ -3,10 +3,10 @@
 # that commit is what Argo CD syncs. Do not edit the tag lines by hand.
 backend:
   image:
-    tag: "0000000000000000000000000000000000000000"
+    tag: "540d05c4003dda4f2cc710fcc2941ac4ef1f16cf"
 frontend:
   image:
-    tag: "0000000000000000000000000000000000000000"
+    tag: "540d05c4003dda4f2cc710fcc2941ac4ef1f16cf"
 postgres:
   existingSecret: shelflend-db   # created once at bootstrap; Argo CD can't use Helm lookup()
 ingress:
