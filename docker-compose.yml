@@ -1,30 +1,49 @@
+# One command brings up the whole stack:  docker compose up --build
+# App: http://localhost:3000   API docs: http://localhost:8000/docs
+name: shelflend
+
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     environment:
-      POSTGRES_DB: taskboard
-      POSTGRES_USER: taskboard
-      POSTGRES_PASSWORD: taskboard
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: shelflend
+      POSTGRES_USER: shelflend
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shelflend-local-dev}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shelflend -d shelflend"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      args:
+        APP_VERSION: compose
     environment:
-      DATABASE_URL: postgresql+psycopg://taskboard:taskboard@postgres:5432/taskboard
+      DATABASE_URL: postgresql+psycopg://shelflend:${POSTGRES_PASSWORD:-shelflend-local-dev}@postgres:5432/shelflend
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/ready').status==200 else 1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   frontend:
     build: ./frontend
+    environment:
+      BACKEND_URL: http://backend:8000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
-      - "3000:80"
+      - "3000:8080"
 
 volumes:
-  postgres-data:
+  pgdata:
