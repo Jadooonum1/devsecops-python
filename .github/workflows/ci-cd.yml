@@ -31,7 +31,7 @@ env:
 jobs:
   backend-tests:
     name: Backend tests (pytest)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults: { run: { working-directory: backend } }
     steps:
       - uses: actions/checkout@v7
@@ -56,7 +56,7 @@ jobs:
 
   migrations:
     name: Migrations on real Postgres
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:17-alpine
@@ -96,7 +96,7 @@ jobs:
 
   frontend-build:
     name: Frontend build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults: { run: { working-directory: frontend } }
     steps:
       - uses: actions/checkout@v7
@@ -111,7 +111,7 @@ jobs:
 
   security:
     name: Secrets + SAST
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 } # gitleaks scans the whole history
@@ -126,7 +126,7 @@ jobs:
 
   helm-lint:
     name: Helm lint + render
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - name: Lint and render every values file
@@ -142,38 +142,51 @@ jobs:
   images:
     name: Build + Trivy (${{ matrix.component }})
     needs: [backend-tests, migrations, frontend-build, security, helm-lint]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         component: [backend, frontend]
     steps:
       - uses: actions/checkout@v7
-      - name: Build image
+      - uses: docker/setup-qemu-action@v4
+        with: { platforms: arm64 }
+      - uses: docker/setup-buildx-action@v4
+      # amd64 for EKS/CI, arm64 for Apple-silicon kind clusters. The result is
+      # one OCI archive: it is scanned per platform below and then pushed as-is.
+      - name: Build multi-arch image (linux/amd64, linux/arm64)
         run: |
-          docker build --pull \
+          docker buildx build --pull \
+            --platform linux/amd64,linux/arm64 \
+            --provenance=false --sbom=false \
             --build-arg APP_VERSION="${GITHUB_SHA::7}" \
             --label org.opencontainers.image.source="https://github.com/${GITHUB_REPOSITORY}" \
             --label org.opencontainers.image.revision="${GITHUB_SHA}" \
-            -t "shelflend-${{ matrix.component }}:${GITHUB_SHA}" ${{ matrix.component }}
-      - name: Trivy scan (fails on fixable HIGH/CRITICAL)
+            --output type=oci,dest=image.tar \
+            ${{ matrix.component }}
+      - name: Trivy scan each platform (fails on fixable HIGH/CRITICAL)
         run: |
           set -o pipefail
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD/security:/cfg:ro" "$TRIVY_IMAGE" \
-            image --config /cfg/trivy.yaml --db-repository mirror.gcr.io/aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db \
-            "shelflend-${{ matrix.component }}:${GITHUB_SHA}" | tee trivy.txt
+          : > trivy.txt
+          for arch in amd64 arm64; do
+            skopeo copy --override-arch "$arch" --override-os linux oci-archive:image.tar "docker-archive:${arch}.tar"
+            echo "===== linux/${arch} =====" | tee -a trivy.txt
+            docker run --rm -v "$PWD:/work" -v "$PWD/security:/cfg:ro" "$TRIVY_IMAGE" \
+              image --config /cfg/trivy.yaml --db-repository mirror.gcr.io/aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db \
+              --input "/work/${arch}.tar" | tee -a trivy.txt
+          done
       - name: Trivy summary
         if: always()
         run: |
           {
             echo "### Trivy: shelflend-${{ matrix.component }}:${GITHUB_SHA::7}"
             echo '```'
-            sed -n '/Report Summary/,$p' trivy.txt | grep -v 'METADATA\|^├\|^│ *│' | head -60
+            grep -E '=====|Total:|^│ .*(alpine|debian|python-pkg|node-pkg).*│ +[0-9]+ +│' trivy.txt | grep -v 'METADATA' | head -40
+            grep -B2 -A8 'Report Summary' trivy.txt | head -40
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-      # Push exactly what was scanned: save the tarball rather than rebuilding later.
-      - name: Save scanned image
-        run: docker save "shelflend-${{ matrix.component }}:${GITHUB_SHA}" | gzip -1 > image.tar.gz
+      - name: Compress scanned archive
+        run: gzip -1 image.tar
       - uses: actions/upload-artifact@v7
         with:
           name: image-${{ matrix.component }}
@@ -184,7 +197,7 @@ jobs:
     name: Push to GHCR (${{ matrix.component }})
     needs: images
     if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -194,24 +207,24 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with: { name: "image-${{ matrix.component }}" }
-      - run: gunzip -c image.tar.gz | docker load
-      - uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Tag with the full commit SHA and push (never :latest)
+      - name: Push the scanned archive, tagged with the full commit SHA (never :latest)
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gunzip image.tar.gz
           owner="${GITHUB_REPOSITORY_OWNER,,}" # GHCR rejects upper-case
           ref="ghcr.io/${owner}/shelflend-${{ matrix.component }}:${GITHUB_SHA}"
-          docker tag "shelflend-${{ matrix.component }}:${GITHUB_SHA}" "$ref"
-          docker push "$ref"
-          echo "Pushed \`$ref\`" >> "$GITHUB_STEP_SUMMARY"
+          skopeo copy --all --dest-creds "${GITHUB_ACTOR}:${GHCR_TOKEN}" oci-archive:image.tar "docker://${ref}"
+          skopeo inspect --raw "docker://${ref}" | jq -r '.manifests[] | "\(.platform.os)/\(.platform.architecture) \(.digest)"' | tee platforms.txt
+          {
+            echo "Pushed \`$ref\`"
+            echo '```'; cat platforms.txt; echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   deploy:
     name: Deploy to kind + smoke test
     needs: push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: helm/kind-action@v1
@@ -253,7 +266,7 @@ jobs:
     name: Promote SHA to gitops/
     needs: deploy
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:

@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 # ---- stage 1: build the static bundle --------------------------------------
-FROM node:22-alpine AS build
+# The bundle is architecture-independent, so build it natively on the builder.
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 WORKDIR /src
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
