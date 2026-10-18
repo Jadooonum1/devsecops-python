@@ -1,0 +1,83 @@
+{{- $tag := required "backend.image.tag is required (deploy by commit SHA)" .Values.backend.image.tag }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "shelflend.fullname" . }}-backend
+  labels:
+    {{- include "shelflend.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/version: {{ $tag | trunc 63 | quote }}
+spec:
+  {{- if not .Values.backend.autoscaling.enabled }}
+  replicas: {{ .Values.backend.replicas }}
+  {{- end }}
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: { maxSurge: 1, maxUnavailable: 0 }
+  selector:
+    matchLabels: {{- include "shelflend.selector" (dict "root" . "component" "backend") | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "shelflend.selector" (dict "root" . "component" "backend") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if not .Values.postgres.existingSecret }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: false
+      securityContext: {{- include "shelflend.podSecurity" (dict "uid" 10001) | nindent 8 }}
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ $tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - { name: http, containerPort: 8000 }
+          envFrom:
+            - configMapRef:
+                name: {{ include "shelflend.fullname" . }}-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: {{ include "shelflend.secretName" . }}, key: password }
+            - name: APP_VERSION
+              value: {{ $tag | trunc 7 | quote }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef: { fieldPath: metadata.name }
+          startupProbe:
+            httpGet: { path: /health, port: http }
+            periodSeconds: 3
+            failureThreshold: 40
+          livenessProbe:
+            httpGet: { path: /health, port: http }
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /ready, port: http }
+            periodSeconds: 5
+            failureThreshold: 2
+          resources: {{- toYaml .Values.backend.resources | nindent 12 }}
+          securityContext: {{- include "shelflend.containerSecurity" . | nindent 12 }}
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "shelflend.fullname" . }}-backend
+  labels:
+    {{- include "shelflend.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector: {{- include "shelflend.selector" (dict "root" . "component" "backend") | nindent 4 }}
+  ports:
+    - { name: http, port: 8000, targetPort: http }

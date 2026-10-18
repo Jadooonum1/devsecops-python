@@ -1,0 +1,62 @@
+# Defaults. Environment files (values-dev/staging/prod.yaml, gitops/values-gitops.yaml)
+# override only what differs. Image tags are REQUIRED: deploy by commit SHA.
+
+nameOverride: ""
+imagePullSecrets: []
+
+backend:
+  image:
+    repository: ghcr.io/jadooonum1/shelflend-backend
+    tag: ""
+    pullPolicy: IfNotPresent
+  replicas: 2            # ignored when autoscaling.enabled (the HPA owns it)
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 500m, memory: 256Mi }
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 60
+    scaleDownStabilizationSeconds: 60
+  rules:
+    loanDays: 14
+    maxRenewals: 2
+    finePerDay: 10
+    fineBlockLimit: 100
+
+frontend:
+  image:
+    repository: ghcr.io/jadooonum1/shelflend-frontend
+    tag: ""
+    pullPolicy: IfNotPresent
+  replicas: 2
+  resources:
+    requests: { cpu: 25m, memory: 32Mi }
+    limits: { cpu: 200m, memory: 64Mi }
+
+postgres:
+  image: postgres:17-alpine
+  database: shelflend
+  user: shelflend
+  password: ""            # empty: generate once and keep it across upgrades
+  existingSecret: ""      # name of a Secret with key `password` (prod / GitOps)
+  storage: 1Gi
+  storageClass: ""
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { cpu: 500m, memory: 512Mi }
+
+ingress:
+  enabled: true
+  className: nginx
+  host: shelflend.local
+  tls: []
+
+podDisruptionBudget:
+  enabled: true
+
+monitoring:
+  enabled: false          # needs the Prometheus Operator CRDs (kube-prometheus-stack)
+  interval: 15s
+  overdueAlertThreshold: 5

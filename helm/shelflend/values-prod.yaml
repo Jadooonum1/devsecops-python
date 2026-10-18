@@ -1,0 +1,18 @@
+# Production shape: autoscaling, monitoring, DB password from a pre-created Secret.
+backend:
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+  resources:
+    requests: { cpu: 250m, memory: 256Mi }
+    limits: { cpu: "1", memory: 512Mi }
+frontend:
+  replicas: 3
+postgres:
+  existingSecret: shelflend-db
+  storage: 10Gi
+ingress:
+  host: shelflend.example.com
+monitoring:
+  enabled: true

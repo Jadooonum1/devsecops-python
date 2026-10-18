@@ -1,0 +1,15 @@
+# Local/CI smoke deploys: small and fast, no autoscaler, no monitoring CRDs.
+backend:
+  autoscaling:
+    enabled: false
+  replicas: 2
+  image:
+    pullPolicy: IfNotPresent
+frontend:
+  replicas: 2
+postgres:
+  storage: 512Mi
+ingress:
+  host: shelflend.local
+monitoring:
+  enabled: false

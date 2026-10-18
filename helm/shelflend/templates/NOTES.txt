@@ -1,0 +1,6 @@
+ShelfLend {{ .Values.backend.image.tag | trunc 7 }} is deployed to namespace {{ .Release.Namespace }}.
+
+  App:      http://{{ .Values.ingress.host }}/
+  API docs: http://{{ .Values.ingress.host }}/docs
+
+  kubectl -n {{ .Release.Namespace }} get pods,svc,ingress

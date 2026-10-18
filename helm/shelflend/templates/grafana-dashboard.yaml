@@ -1,0 +1,12 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "shelflend.fullname" . }}-dashboard
+  labels:
+    {{- include "shelflend.labels" . | nindent 4 }}
+    grafana_dashboard: "1"
+data:
+  shelflend.json: |-
+{{ .Files.Get "dashboards/shelflend.json" | indent 4 }}
+{{- end }}

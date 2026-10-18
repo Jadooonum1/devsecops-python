@@ -1,0 +1,14 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+{{- range $c := list "backend" "frontend" }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "shelflend.fullname" $ }}-{{ $c }}
+  labels: {{- include "shelflend.labels" $ | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {{- include "shelflend.selector" (dict "root" $ "component" $c) | nindent 6 }}
+{{- end }}
+{{- end }}

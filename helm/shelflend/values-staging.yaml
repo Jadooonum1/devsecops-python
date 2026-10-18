@@ -1,0 +1,11 @@
+# Installed by hand with `helm upgrade --install` (shows up in `helm list`).
+backend:
+  autoscaling:
+    enabled: false
+  replicas: 2
+frontend:
+  replicas: 2
+ingress:
+  host: staging.shelflend.local
+monitoring:
+  enabled: false
