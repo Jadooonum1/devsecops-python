@@ -22,6 +22,9 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85em
 small { color: var(--muted); }
 
 .shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+/* grid items default to min-width:auto; without this, wide rows push the
+   column past the viewport on phones */
+.shell > * { min-width: 0; }
 
 /* ------------------------------------------------------------------ sidebar */
 .sidebar {
@@ -133,7 +136,7 @@ button.link { background: none; border: 0; color: var(--brand-2); padding: 0; te
 .pill.on_loan, .pill.active { background: #e7eefb; color: #2953a3; }
 .pill.maintenance { background: #fbf2d9; color: #8a6510; }
 .pill.lost { background: #fde7e5; color: var(--bad); }
-.pill.overdue { background: #fde9dc; color: var(--warn); }
+.pill.overdue { background: #fde9dc; color: var(--warn); text-transform: none; }
 
 .meter { display: inline-block; width: 46px; height: 6px; background: #e3e8e5; border-radius: 3px; margin-right: 8px; vertical-align: middle; overflow: hidden; }
 .meter i { display: block; height: 100%; background: var(--brand-2); }
