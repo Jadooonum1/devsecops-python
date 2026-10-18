@@ -1,0 +1,13 @@
+# Used by CI:  trivy image --config security/trivy.yaml <image>
+severity:
+  - HIGH
+  - CRITICAL
+exit-code: 1
+format: table
+scan:
+  scanners:
+    - vuln
+    - secret
+vulnerability:
+  # Must sit under `vulnerability:`; at the top level Trivy silently ignores it.
+  ignore-unfixed: true

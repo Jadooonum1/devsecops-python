@@ -1,0 +1,14 @@
+title = "ShelfLend gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Documented local-only demo values"
+regexes = [
+  '''shelflend-local-dev''',
+  '''change-me''',
+]
+paths = [
+  '''docs/course-README\.md''',
+]
